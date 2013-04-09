@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# <xpacne00@stud.fit.vutbr.cz> wrote this file. As long as you retain this
+# notice you can do whatever you want with this stuff. If we meet some day,
+# and you think this stuff is worth it, you can buy me a beer in return.
+# Jan Pacner
+
 #FIXME specify inbound + outbound latency in nsec (compesate e.g. sockets usage)
 #  ptpd -l IN,OUT
 

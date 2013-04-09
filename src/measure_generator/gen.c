@@ -1,7 +1,12 @@
 /**
  * periodical generator of rising edges on RS232 DTR port
- * Jan Pacner xpacne00@stud.fit.vutbr.cz
  * 2013-01-06 16:48:43 CET
+ *
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <xpacne00@stud.fit.vutbr.cz> wrote this file. As long as you retain this
+ * notice you can do whatever you want with this stuff. If we meet some day,
+ * and you think this stuff is worth it, you can buy me a beer in return.
+ * Jan Pacner
  */
 
 // TODO
