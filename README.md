@@ -1,14 +1,14 @@
 QNX network time synchronization and evaluation of available methods with their QNX implementations
 --------
 
-# get & apply the patch, compile & run the PTPd
+### get & apply the patch, compile & run the PTPd
 
 create a new directory
 ~~~~~~
   mkdir ptp_qnx
   cd ptp_qnx
 ~~~~~~
-clone a github project
+clone a github project (almost 30MB)
 ~~~~~~
   git clone --depth 1 https://github.com/dumblob/qnx_net_time_sync.git
 ~~~~~~
@@ -23,7 +23,7 @@ unpack the recently downloaded archive with PTPd
 ~~~~~~
 apply the patch
 ~~~~~~
-  patch -p 1 < ../qnx_net_time_sync/.../ptp/patch.ptpd-2.2.2
+  patch -p 1 < ../qnx_net_time_sync/src/ptp/patch.ptpd-2.2.2
 ~~~~~~
 compile `PTPd`
 ~~~~~~
