@@ -1,0 +1,299 @@
+diff -urN old/src/Makefile new/src/Makefile
+--- old/src/Makefile	2013-01-06 08:11:49.000000000 +0000
++++ new/src/Makefile	2013-03-06 09:54:39.000000000 +0000
+@@ -43,7 +43,13 @@
+ 
+ CFLAGS += -DPTP_EXPERIMENTAL
+ 
+-LDFLAGS = -lm -lrt
++ARCH=$(shell uname)
++ifeq ($(ARCH),QNX)
++	LDFLAGS = -lm -lsocket
++else
++	LDFLAGS = -lm -lrt
++endif
++
+ STATICLIBFLAGS = rcs
+ SHAREDLIBFLAGS = -shared -Wl,-soname
+ 
+diff -urN old/src/bmc.c new/src/bmc.c
+--- old/src/bmc.c	2013-01-06 08:11:49.000000000 +0000
++++ new/src/bmc.c	2013-03-06 09:53:50.000000000 +0000
+@@ -258,7 +258,7 @@
+ 			ptpClock->leapSecondPending = FALSE;
+ 			ptpClock->leapSecondInProgress = FALSE;
+ 			timerStop(LEAP_SECOND_PAUSE_TIMER, ptpClock->itimer);
+-#if !defined(__APPLE__)
++#if !defined(__APPLE__) && !defined(__QNXNTO__)
+ 			unsetTimexFlags(STA_INS | STA_DEL,TRUE);
+ #endif /* apple */
+ 		}
+@@ -272,7 +272,7 @@
+ 		    !ptpClock->leapSecondInProgress ) ||
+ 		    ((!previousLeap59 && ptpClock->leap59) ||
+ 		    (!previousLeap61 && ptpClock->leap61)))) {
+-#if !defined(__APPLE__)
++#if !defined(__APPLE__) && !defined(__QNXNTO__)
+ 			WARNING("=== Leap second pending! Setting kernel to %s "
+ 				"one second at midnight\n",
+ 				ptpClock->leap61 ? "add" : "delete");
+diff -urN old/src/dep/constants_dep.h new/src/dep/constants_dep.h
+--- old/src/dep/constants_dep.h	2013-01-06 08:11:48.000000000 +0000
++++ new/src/dep/constants_dep.h	2013-01-06 09:38:25.000000000 +0000
+@@ -16,7 +16,7 @@
+ /* platform dependent */
+ 
+ #if !defined(linux) && !defined(__NetBSD__) && !defined(__FreeBSD__) && \
+-  !defined(__APPLE__)
++  !defined(__APPLE__) && !defined(__QNXNTO__)
+ #error Not ported to this architecture, please update.
+ #endif
+ 
+@@ -38,6 +38,29 @@
+ #endif /* linux */
+ 
+ 
++#ifdef __QNXNTO__
++# include <netinet/in.h>
++# include <net/if.h>
++# include <net/if_dl.h>
++# include <net/if_types.h>
++# include <net/if_ether.h>
++# include <sys/types.h>
++# include <sys/socket.h>
++# include <ifaddrs.h>
++# include <sys/neutrino.h>
++# define BSD_INTERFACE_FUNCTIONS
++# define IFACE_NAME_LENGTH         IF_NAMESIZE
++# define NET_ADDRESS_LENGTH        INET_ADDRSTRLEN
++
++# include<sys/param.h>
++# if BYTE_ORDER == LITTLE_ENDIAN
++#  define PTPD_LSBF
++# elif BYTE_ORDER == BIG_ENDIAN
++#  define PTPD_MSBF
++# endif
++#endif /* qnx */
++
++
+ #if defined(__NetBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
+ # include <sys/types.h>
+ # include <sys/socket.h>
+diff -urN old/src/dep/net.c new/src/dep/net.c
+--- old/src/dep/net.c	2013-01-06 08:11:48.000000000 +0000
++++ new/src/dep/net.c	2013-03-06 09:53:35.000000000 +0000
+@@ -622,6 +622,13 @@
+ 		return FALSE;
+ 	}
+ 
++#ifdef __QNXNTO__
++	/* always overwrite SO_TIMESTAMP value of QNX. it gets only incremented
++		 every 8ms. */
++	TimeInternal t;
++	getTime(&t);
++#endif
++
+ 	return TRUE;
+ }
+ 
+diff -urN old/src/dep/sys.c new/src/dep/sys.c
+--- old/src/dep/sys.c	2013-01-06 08:11:48.000000000 +0000
++++ new/src/dep/sys.c	2013-03-06 09:52:46.000000000 +0000
+@@ -231,7 +231,7 @@
+ 	static struct ether_addr prev_addr;
+ 	static char buf[BUF_SIZE];
+ 
+-#if defined(linux) || defined(__NetBSD__)
++#if defined(linux) || defined(__NetBSD__) || defined(__QNXNTO__)
+ 	if (memcmp(addr->ether_addr_octet, &prev_addr, 
+ 		  sizeof(struct ether_addr )) != 0) {
+ 		valid = 0;
+@@ -275,7 +275,7 @@
+ 	for (i = 0, j = 0; i< CLOCK_IDENTITY_LENGTH ; i++ ){
+ 		/* skip bytes 3 and 4 */
+ 		if(!((i==3) || (i==4))){
+-#if defined(linux) || defined(__NetBSD__)
++#if defined(linux) || defined(__NetBSD__) || defined(__QNXNTO__)
+ 			e.ether_addr_octet[j] = (uint8_t) id[i];
+ #else // e.g. defined(__FreeBSD__)
+ 			e.octet[j] = (uint8_t) id[i];
+@@ -563,6 +563,44 @@
+ 	return TRUE;
+ }
+ 
++#ifdef __QNXNTO__
++#define MIN_HANDLER_CALLS 2
++typedef struct {
++	_uint8 int_count;  // count of first few handler calls
++	_uint64 last_tsc;  // CPU clock cycles (free-running 64b counter)
++	_uint64 tsc_step;
++	_uint64 last_clock;  // ns
++	_uint64 clock_step;  // ns
++} no_page_area;
++
++const struct sigevent* timer_handler(void* area, int id) {
++	struct timespec tp;
++	uint64_t new_clock;
++	no_page_area* a = (no_page_area*)area;
++	uint64_t new_tsc = ClockCycles();
++	uint64_t new_tsc_step = new_tsc - a->last_tsc;
++	int s = 100;  // weight maximum
++	int f = 40;  /* weight of the old step (used for calculation of the new step)
++	                weight of the new one is the rest to the weight maximum */
++	if(a->tsc_step == 0)
++		f = 0;
++	/* weighted calculation to smoother the steps (no wory about overflow - we
++	     would need to run 5GHz CPU for at least 100 years) */
++	a->tsc_step = (f * a->tsc_step + (s - f) * new_tsc_step) / s;
++	a->last_tsc = new_tsc;
++
++	// prevent overflow (only first few calls are needed)
++	if(a->int_count < MIN_HANDLER_CALLS)
++		a->int_count++;
++
++	clock_gettime(CLOCK_REALTIME, &tp);
++	new_clock = timespec2nsec(&tp);
++	a->clock_step = new_clock - a->last_clock;
++	a->last_clock = new_clock;
++	return NULL;
++}
++#endif
++
+ void 
+ getTime(TimeInternal * time)
+ {
+@@ -572,6 +610,59 @@
+ 	gettimeofday(&tv, 0);
+ 	time->seconds = tv.tv_sec;
+ 	time->nanoseconds = tv.tv_usec * 1000;
++
++#elif defined(__QNXNTO__)
++	static no_page_area* area = NULL;
++	static no_page_area a;
++	int ret;
++	uint64_t tsc_offset;
++	double step_part;
++	uint64_t clock_offset;
++	struct timespec tp;
++
++	if(! area) {
++		// register interrupt handler and reserve memory
++		area = (no_page_area*)malloc(sizeof(no_page_area));
++		area->int_count = 0;
++		area->tsc_step = 0;
++		area->clock_step = 0;
++		area->last_tsc = ClockCycles();
++		clock_gettime(CLOCK_REALTIME, &tp);
++		area->last_clock = timespec2nsec(&tp);
++		if(ThreadCtl(_NTO_TCTL_IO, 0) == -1) {
++			PERROR("ThreadCtrl");
++			return;
++		}
++		ret = InterruptAttach(
++				0,  /* x86: A clock that runs at the resolution set by
++				       ClockPeriod() (1ms default for >= 40MHz CPU; else 10ms) */
++				timer_handler, area, sizeof(no_page_area),
++				_NTO_INTR_FLAGS_END | _NTO_INTR_FLAGS_TRK_MSK);
++		if(ret == -1) {
++			PERROR("InterruptAttach");
++			return ;
++		}
++		time->seconds = tp.tv_sec;
++		time->nanoseconds = tp.tv_nsec;
++		return;
++	}
++	memcpy(&a, area, sizeof(no_page_area));
++
++	// first 2 interrupt calls would yield low precise (=> bad) offset
++	if(a.int_count < 2) {
++		clock_offset = 0;
++	} else {
++		tsc_offset = ClockCycles() - a.last_tsc;
++		step_part = (double)tsc_offset / (double)a.tsc_step;
++		/* calculate fractional part (from cycle count) of the previous
++		   nanosecond step */
++		clock_offset = (uint64_t)(step_part * (double)a.clock_step);
++	}
++	nsec2timespec(&tp, a.last_clock + clock_offset);
++
++	time->seconds = tp.tv_sec;
++	time->nanoseconds = tp.tv_nsec;
++
+ #else
+ 	struct timespec tp;
+ 	if (clock_gettime(CLOCK_REALTIME, &tp) < 0) {
+@@ -606,8 +697,16 @@
+ }
+ 
+ 
++#ifdef __QNXNTO__
++Boolean
++adjFreq(Integer32 adj)
++{
++	struct _clockadjust new;
++	new.tick_count = 1;
++	new.tick_nsec_inc = adj / new.tick_count;
+ 
+-
++	return ClockAdjust(CLOCK_REALTIME, &new, NULL) != -1;
++}
+ 
+ /*
+  * TODO: this function should have been coded in a way to manipulate both the frequency and the tick,
+@@ -615,7 +714,7 @@
+  * This would result in situations we would force the kernel clock to run the clock twice as slow,
+  * in order to avoid stepping time backwards
+  */
+-#if !defined(__APPLE__)
++#elif !defined(__APPLE__)
+ Boolean
+ adjFreq(Integer32 adj)
+ {
+diff -urN old/src/protocol.c new/src/protocol.c
+--- old/src/protocol.c	2013-01-06 08:11:49.000000000 +0000
++++ new/src/protocol.c	2013-03-06 09:55:47.000000000 +0000
+@@ -291,7 +291,7 @@
+ 
+ 		ptpClock->portState = PTP_SLAVE;
+ 
+-#if !defined(__APPLE__)
++#if !defined(__APPLE__) && !defined(__QNXNTO__)
+ 
+ 		/* 
+ 		 * leap second pending in kernel but no leap second 
+@@ -463,7 +463,7 @@
+                             WARNING("=== Leap second event imminent - pausing "
+ 				    "clock and offset updates\n");
+                             ptpClock->leapSecondInProgress = TRUE;
+-#if !defined(__APPLE__)
++#if !defined(__APPLE__) && !defined(__QNXNTO__)
+                             if(!checkTimexFlags(ptpClock->leap61 ? 
+ 						STA_INS : STA_DEL)) {
+                                     WARNING("=== Kernel leap second flags have "
+@@ -786,7 +786,9 @@
+ 					ptpClock->leapSecondInProgress=FALSE;
+ 					ptpClock->leap59 = FALSE;
+ 					ptpClock->leap61 = FALSE;
++#ifndef __QNXNTO__
+ 					unsetTimexFlags(STA_INS | STA_DEL, TRUE);
++#endif
+ 				}
+ 			}
+ 			DBG2("___ Announce: received Announce from current Master, so reset the Announce timer\n");
+diff -urN old/src/ptpd.h new/src/ptpd.h
+--- old/src/ptpd.h	2013-01-06 08:11:49.000000000 +0000
++++ new/src/ptpd.h	2013-03-06 09:55:21.000000000 +0000
+@@ -32,9 +32,12 @@
+ #include <netdb.h>
+ #include <sys/time.h>
+ #include <sys/resource.h>
+-#ifndef __APPLE__
++#if !defined(__APPLE__) && !defined(__QNXNTO__)
+ #include <sys/timex.h>
+ #endif
++#ifdef __QNXNTO__
++#include <unix.h>  /* setlinebuf() */
++#endif
+ #include <sys/socket.h>
+ #include <sys/select.h>
+ #include <sys/ioctl.h>

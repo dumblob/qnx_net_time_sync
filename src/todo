@@ -1,0 +1,16 @@
+measure
+  BMC best master clock
+    computed from different infos including hop-count => measure latency between
+      2 PTP master stations through a different number of routers
+  use PTPd in "relay" mode
+
+bc thesis
+  NTP description
+  inturrupt handler each 1ms (== clock period == QNX "tick"), min == 10us
+    The timeslice rate (for “round-robin” and “other” scheduling
+    policies) is always four times the clock period (this isn't
+    changeable).
+
+add to Alfresco
+  http://www.eecis.udel.edu/~mills/ptp.html
+  this todo

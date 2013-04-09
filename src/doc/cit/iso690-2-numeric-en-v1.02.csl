@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ?oxygen RNGSchema="http://xbiblio.svn.sourceforge.net/viewvc/*checkout*/xbiblio/csl/schema/trunk/csl.rnc" type="compact"? -->
+<style xmlns="http://purl.org/net/xbiblio/csl" xml:lang="en" class="in-text" default-locale="en-US">
+
+    <!-- =================================================================== -->
+    <!-- info ============================================================== -->
+    <info>
+        <title>ISO-690(-2) numeric en</title>
+        <id>http://www.fit.vutbr.cz/~chmelarp/public/iso690-2-numeric-en.csl</id>
+        <link href="http://www.fit.vutbr.cz/~chmelarp/public/iso690-2-numeric-en.csl"/>
+        <author>
+            <name>Petr Chmelar</name>
+            <email>chmelarp@fit.vutbr.cz</email>
+        </author>
+        <category term="numeric"/>
+        <category term="generic-base"/>
+        <updated>2010-01-21</updated>
+        <summary>The numeric citation variant of the ISO 690(-2) style in English</summary>
+        <rights> Copyright (c) 2010 Petr Chmelar
+
+                 This is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
+
+                 This program is free software: you are free to redistribute and modify it.
+                 However, if you make any changes or bug-fixes, you are encouraged to send the
+                 modified version to: chmelarp@fit.vutbr.cz please.
+
+                 You are NOT ALLOWED TO MODIFY OR REPLACE THIS LICENSE,
+                 except with any GPL-compatible free software license.
+        </rights>
+        <link href="http://www.boldis.cz/citace/citace.html" rel="documentation"/>
+    </info>
+
+    <!-- macros ============================================================ -->
+    <!-- title ============================================================= -->
+    <macro name="title">
+        <choose>
+            <if type="book">
+                <text variable="title" font-style="italic"/>
+                <text variable="medium" prefix=" [" suffix="]"/>
+            </if>
+            <else>
+                <text variable="title"/>
+            </else>
+        </choose>
+    </macro>
+
+    <macro name="title-container">
+        <group delimiter=", " >
+            <text variable="container-title" font-style="italic"/>
+            <text variable="collection-title" font-style="italic"/>
+            <text variable="medium" prefix=" [" suffix="]"/>
+        </group>
+    </macro>
+
+    <!-- authors =========================================================== -->
+    <macro name="author">
+        <names variable="author">
+            <name name-as-sort-order="all" sort-separator=", " initialize-with=". " delimiter="; " delimiter-precedes-last="always" text-case="uppercase"/>
+            <substitute>
+                <names variable="original-author"/>
+            </substitute>
+        </names>
+    </macro>
+
+    <macro name="author-container">
+        <names variable="container-author editor collection-editor">
+            <name name-as-sort-order="all" sort-separator=", " initialize-with=". " delimiter="; " delimiter-precedes-last="always" text-case="uppercase"/>
+            <label form="short" text-case="lowercase" prefix=" (" suffix=".)"/>
+        </names>
+    </macro>
+
+    <macro name="editor-translator">
+        <names variable="container-author editor collection-editor translator" delimiter="; ">
+            <name initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+            <label form="short" text-case="lowercase" prefix=" (" suffix=".)"/>
+        </names>
+    </macro>
+
+    <macro name="author-short">
+        <names variable="author">
+            <name form="short" delimiter=", "/>
+            <substitute>
+                <names variable="original-author"/>
+                <names variable="container-author"/>
+                <names variable="editor"/>
+                <names variable="collection-editor"/>
+                <names variable="translator"/>
+                <!-- <text macro="title"/> <text term="anonymous" form="short" text-case="capitalize-first"/> -->
+            </substitute>
+        </names>
+    </macro>
+
+    <macro name="editor-translator">
+        <names variable="container-author editor collection-editor translator" delimiter="; ">
+            <name initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+            <label form="short" text-case="lowercase" prefix=" (" suffix=".)"/>
+        </names>
+    </macro>
+
+    <!-- publisher ========================================================= -->
+    <macro name="publisher">
+        <group delimiter="; " >
+            <group delimiter=" : " >
+                <text variable="publisher-place"/>
+                <text variable="publisher"/>
+            </group>
+        </group>
+    </macro>
+
+    <!-- event ============================================================= -->
+    <macro name="event">
+        <text variable="event"/>
+        <choose> <!-- <text variable="event-place"/> maps to place in Zotero -->
+            <if type="article">
+                <text variable="event-place" prefix=". "/>
+            </if>
+        </choose>
+    </macro>
+
+    <!-- issued ============================================================ -->
+    <macro name="issued">
+        <group delimiter=", ">
+            <text macro="publisher"/>
+            <group delimiter=" ">           
+                <text macro="issued-date"/>
+                <text macro="citation-date" prefix=" "/>
+            </group>
+            <text macro="pages"/>
+        </group>
+    </macro>
+
+    <macro name="issued-year">
+        <date variable="issued">
+            <date-part name="year"/>
+        </date>
+    </macro>
+
+    <macro name="issued-date">
+        <date variable="issued">
+            <date-part name="year"/>
+            <date-part name="month" form="numeric-leading-zeros" prefix="-"/>
+            <date-part name="day" form="numeric-leading-zeros" prefix="-"/>
+        </date>
+    </macro>
+
+    <!-- pages ============================================================= -->
+    <macro name="pages">
+        <group delimiter=" ">
+            <!-- <label variable="page" form="short" suffix=". "/> -->
+            <text variable="page" prefix="p. "/>
+        </group>
+    </macro>
+
+    <macro name="number-of-pages">
+            <text variable="number-of-pages" suffix=" p"/>
+            <!-- <label variable="number-of-pages" form="short"/> -->
+    </macro>
+
+    <!-- locators ========================================================== -->
+    <macro name="locators">
+        <group delimiter=", ">
+            <text macro="issued-date"/>
+            <text variable="volume" prefix="vol. "/>
+            <text variable="issue" prefix="no. "/>
+            <text macro="pages"/>
+        </group>
+    </macro>
+
+    <!-- citation-locators ================================================= -->
+    <macro name="citation-locators">
+        <text variable="URL" prefix="URL &lt;" suffix="&gt;"/>
+    </macro>
+
+    <macro name="citation-date">
+            <!-- <text term="cited" text-case="lowercase" form="short"/> -->
+            <date variable="accessed" prefix="[cit. " suffix="]">
+                <date-part name="year"/>
+                <date-part name="month" form="numeric-leading-zeros" prefix="-"/>
+                <date-part name="day" form="numeric-leading-zeros" prefix="-"/>
+            </date>
+    </macro>
+
+    <!-- container-prefix ================================================== -->
+    <macro name="container-prefix">
+        <!-- Not necessary: <text term="in" text-case="capitalize-first" prefix=". " suffix=": "/> -->
+    </macro>
+
+    <!-- edition =========================================================== -->
+    <macro name="edition">
+        <text variable="edition"/>
+    </macro>
+
+
+    <!-- =================================================================== -->
+    <!-- citation ========================================================== -->
+    <citation>
+        <option name="et-al-min" value="3"/>
+        <option name="et-al-use-first" value="1"/>
+        <option name="collapse" value="citation-number"/>
+        <sort>
+            <key variable="citation-number"/>
+        </sort>
+        <layout prefix="[" suffix="]" delimiter=", ">
+            <text variable="citation-number"/>
+        </layout>
+    </citation>
+
+    <!-- =================================================================== -->
+    <!-- bibliography ====================================================== -->
+    <bibliography>
+        <option name="hanging-indent" value="true"/>
+        <option name="et-al-min" value="4"/>
+        <option name="et-al-use-first" value="1"/>
+        <option name="entry-spacing" value="0"/>
+        <option name="second-field-align" value="true"/>
+        <sort>
+            <key macro="author"/>
+            <key variable="title"/>
+        </sort>
+
+        <layout suffix=".">
+            <text variable="citation-number" suffix="."/>
+
+            <choose>
+
+                <!-- book is a generic fallback for:
+                     book, film, artwork, report, bill, case, hearing, statute,
+                     audioRecording, videoRecording and computerProgram -->
+                <if type="book">
+                    <group delimiter=". " suffix=".">
+                        <text macro="author"/>
+                        <text macro="title"/>
+                        <text macro="editor-translator"/>
+                        <text macro="edition"/>
+                        <text variable="version"/>
+                        <text macro="issued"/>
+                        <text macro="number-of-pages"/>
+                        <text variable="collection-title"/>
+                        <text variable="note"/>
+                        <text variable="DOI" prefix="DOI: "/>
+                        <text macro="citation-locators"/>
+                        <text variable="ISBN" prefix="ISBN: "/>
+                    </group>
+                </if>
+
+                <!-- chapter is a generic fallback for:
+                     bookSection, encyclopediaArticle, dictionaryEntry, conferencePaper -->
+                <else-if type="chapter">
+                    <group delimiter=". " suffix=".">
+                        <text macro="author"/>
+                        <text macro="title"/>
+                        <group delimiter=". " prefix="In ">
+                            <text macro="author-container"/>
+                            <text macro="title-container"/>
+                        </group> 
+                        <text macro="edition"/>
+                        <text variable="version"/>
+                        <text macro="event"/>
+                        <text macro="issued"/>
+                        <text macro="number-of-pages"/>
+                        <text variable="collection-title"/>
+                        <text variable="note"/>
+                        <text variable="DOI" prefix="DOI: "/>
+                        <text macro="citation-locators"/>
+                        <text variable="ISBN" prefix="ISBN: "/>
+                    </group>
+                </else-if>
+
+               <!-- article is a generic fallback for:
+                    journalArticle, magazineArticle, newspaperArticle, thesis, letter, manuscript,
+                    interview, webpage, patent, email, map, blogPost, instantMessage, forumPost,
+                    tvBroadcast, radiobroadcast, podcast and presentation. -->
+                <else-if type="article">
+                    <group delimiter=". " suffix=".">
+                        <text macro="author"/>
+                        <text macro="title"/>
+                        <text macro="author-container"/>
+                        <text macro="title-container"/>
+                        <text macro="locators"/>
+                        <text macro="event"/>
+                        <text macro="number-of-pages"/>
+                        <text variable="note"/>
+                        <text variable="DOI" prefix="DOI: "/>
+                        <text macro="citation-locators"/>
+                        <text variable="collection-number" prefix="ISSN: "/>
+                    </group>
+                </else-if>
+
+            </choose>
+
+        </layout>
+
+    </bibliography>
+</style>
+

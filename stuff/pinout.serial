@@ -1,0 +1,14 @@
+microsoft DE-9<->PS/2_Mini-DIN
+  DE-9           cable_join  meaning  output_pin  origin
+  2              uncovered   RXD      ???         DCE
+  4              white       DTR      red         DTE
+  5              green       GND      blue        both
+  7              blue
+  <unconnected>  orange
+
+green DE-9
+  2              green       RXD      ???         DCE
+  3              orange
+  4              brown       DTR      yellow      DTE
+  5              blue        GND      blue        both
+  7              white

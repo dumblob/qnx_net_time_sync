@@ -1,0 +1,13 @@
+int32 DEFAULT_AP
+int32 DEFAULT_AI
+"-a 10,1000        specify clock servo Proportional and Integral attenuations\n"
+
+/* the accumulator for the I component */
+// original PI servo
+ptpClock->observed_drift += ptpClock->offsetFromMaster.nanoseconds / ai;
+// ADJ_FREQ_MAX: 512 000
+// ... zarovnani na tuhle velikost + pripadne ODECTENI (viz. servo.c)
+adj = ptpClock->offsetFromMaster.nanoseconds / ap + ptpClock->observed_drift;
+adjFreq(-adj);  // t
+
+vim: set ft=c wrap:
