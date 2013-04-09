@@ -1,7 +1,7 @@
-QNX network time synchronization and evaluation of available methods with their QNX implementations
+QNX network time synchronization and evaluation of available methods using their QNX implementations
 --------
 
-### get & apply the patch, compile & run the PTPd
+### steps to get & apply the patch and compile & run the PTPd on QNX 6.5.0
 
 create a new directory
 ~~~~~~
@@ -16,7 +16,7 @@ download `PTPd` version 2.2.2
 ~~~~~~
   http://sourceforge.net/projects/ptpd/files/ptpd/2.2.2/ptpd-2.2.2.tar.gz
 ~~~~~~
-unpack the recently downloaded archive with PTPd
+unpack the recently downloaded archive with `PTPd`
 ~~~~~~
   tar -xzf ptpd-2.2.2.tar.gz
   cd ptpd-2.2.2
@@ -34,7 +34,7 @@ run `PTPd` as `master` on interface `eth0` with maximum verbosity
 ~~~~~~
   ./ptpd2 -G -b eth0 -C -DVfS
 ~~~~~~
-or as slave
+or as `slave`
 ~~~~~~
   ./ptpd2 -g -b eth0 -C -DVfS
 ~~~~~~
