@@ -10,6 +10,7 @@ bc thesis
     The timeslice rate (for “round-robin” and “other” scheduling
     policies) is always four times the clock period (this isn't
     changeable).
+  reference mereni (od CZ.NICu, ...)
 
 add to Alfresco
   http://www.eecis.udel.edu/~mills/ptp.html

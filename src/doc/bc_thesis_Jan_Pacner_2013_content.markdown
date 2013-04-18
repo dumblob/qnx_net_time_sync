@@ -1,6 +1,12 @@
 \setlength\parindent{16pt}
 \setlength{\parskip}{0pt}
 
+<!-- FIXME jak casto je BMC lokalne spousten?
+BMC
+    bezi kontinualne (bez zastaveni), tzn. po prijeti kazdeho noveho DataSetu a nebo Announce zpravy apod.
+    vypocet lokalne, tedy na synchronizovane stanici
+-->
+
 Úvod
 ====
 

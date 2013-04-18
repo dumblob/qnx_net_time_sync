@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project outputprefix="xpacne00_edge_detect">
+
+  <!--  Project description -->
+  <name>RS232 edge detector</name>
+  <author>Jan Pacner</author>
+  <authoremail>xpacne00@stud.fit.vutbr.cz</authoremail>
+  <revision>20130404</revision>
+  <description>RS232 edge detector using MSP430 rising edge INT.</description>
+
+  <!--  MCU part -->
+  <mcu>
+    <!--include>mcu/libs/keyboard/package.xml</include-->
+    <!--include>mcu/libs/lcd/package.xml</include-->
+    <!--include>mcu/libfitkit/library.xml</include-->
+
+    <file>main.c</file>
+  </mcu>
+
+  <!-- FPGA part -->
+  <!--fpga use="apps/demo/display/project.xml" /--><!-- LCD -->
+  <fpga architecture="top">
+    <!--include>fpga/ctrls/spi/package.xml</include-->
+    <!--include>fpga/ctrls/lcd/package.xml</include-->
+    <!--include>fpga/ctrls/irq/package.xml</include-->
+    <!--include>fpga/ctrls/serial/package.xml</include-->
+    <!--include>fpga/ctrls/keyboard/package.xml</include-->
+    <!--include>fpga/ctrls/lcd/lcd_ctrl_high.xml</include-->
+
+    <!--file>apps/demo/display/fpga/top_level.vhd</file-->
+    <file>top.vhd</file>
+  </fpga>
+
+</project>

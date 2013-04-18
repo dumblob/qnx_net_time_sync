@@ -1,0 +1,38 @@
+# RS232 MAX -> FPGA
+# RXD X42 44 IO_L20P_6
+# TXD X43 45 IO_L20N_6
+# RTS X44 46 IO_L19P_6
+# CTS X45 48 IO_L19N_6
+
+# FTDI -> FPGA
+# AFBUS0 TXD 52 IO_L01N_6/VRP_6
+# AFBUS1 RXD 51 IO_L01P_6/VRN_6
+# AFBUS2 RTS 57 IO_L01P_5/CS
+# AFBUS3 CTS 58 IO_L01N_5/RDWR
+# AFBUS4 DTR 61 IO_L10N_5/VRN_5
+
+#NET "MY_RXD" LOC = "P44", "P51";
+#NET "MY_TXD" LOC = "P45", "P52";
+#NET "MY_RTS" LOC = "P46", "P57";
+#NET "MY_CTS" LOC = "P48", "P58";
+
+#NET "MY_RXD5" LOC = "P51";
+#NET "MY_TXD5" LOC = "P52";
+#NET "MY_RTS5" LOC = "P57";
+#NET "MY_CTS5" LOC = "P58";
+#############
+#NET "MY_RXD4" LOC = "P44";
+#NET "MY_TXD4" LOC = "P45";
+#NET "MY_RTS4" LOC = "P46";
+#NET "MY_CTS4" LOC = "P48";
+
+# original mapping from FitKit creators (fpga/chips/fpga_xc3s50.ucf)
+#NET "AFBUS<0>"    LOC = "P52" | PERIOD=6 MHz HIGH 50%;
+#NET "AFBUS<1>"    LOC = "P51" ;
+#NET "AFBUS<2>"    LOC = "P57" ;
+#NET "AFBUS<3>"    LOC = "P58" ;
+############
+#NET "X<42>"   LOC = "P44" ;  # RXD
+#NET "X<43>"   LOC = "P45" ;  # TXD
+#NET "X<44>"   LOC = "P46" ;  # RTS
+#NET "X<45>"   LOC = "P48" ;  # CTS
