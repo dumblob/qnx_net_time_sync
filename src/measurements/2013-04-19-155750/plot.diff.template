@@ -1,0 +1,18 @@
+set terminal png size 800,500
+set output "results.diff.png"
+#set output "results.ps"
+
+#set size 1,2  # pomer asi 1:1
+set grid
+set style data lines
+
+set key
+set title "measurement {{{N}}}"
+set xlabel "sample pairs";  set ylabel "time difference [1/{{{F}}} s]"
+#set xlabel "sample";  set ylabel "time offset [1/7372800 s]"
+plot "results.diff" using 1:2 title "difference [1/{{{F}}} s]"
+
+#set nokey
+#set title "some title..."
+#set xlabel "x axis";  set ylabel "y axis"
+#plot "in00.dat" using 2:3

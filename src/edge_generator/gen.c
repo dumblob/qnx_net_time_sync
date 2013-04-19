@@ -68,7 +68,7 @@
 #define SER_8250_IIR_RX_AVAILABLE   BIT2
 
 //FIXME does 0.5ms brake our Atom PC?
-#define CLOCK_PERIOD_NS 500000
+#define CLOCK_PERIOD_NS 200000
 #define DTR_PERIOD_NS   1000000000
 
 void check_statuses(int fd) {
@@ -135,8 +135,10 @@ int main(int argc, char* argv[]) {
   char buf[BUF_SIZE];
   // -ihflow and -ohflow turn off flow control provided by hardware handshaking lines
   // TODO use struct termios instead
-  snprintf(buf, BUF_SIZE, "stty baud=460800 bits=8 par=none stopb=1"
-     " -ihflow -ohflow -isflow -osflow < %s", argv[1]);
+  snprintf(buf, BUF_SIZE, "stty baud=115200 bits=8 par=none stopb=1"
+     " -ihflow -ohflow -isflow -osflow -clocal"
+     " -ihpaged -ohpaged -ispaged -ospaged +flush"
+     " < %s", argv[1]);
 
   if (system(buf) != 0) {
     fprintf(stderr, "ERR %s\n", buf);
@@ -144,11 +146,9 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  // FIXME O_RDWR | O_NOCTTY | O_SYNC
-  //       O_DSYNC
+  // FIXME O_DSYNC
   //       O_NDELAY [QNX special]
-  //area->fd = open(argv[1], O_WRONLY | O_NOCTTY | O_SYNC);
-  //area->fd = open(argv[1], O_RDWR | O_NOCTTY | O_SYNC);
+  //int fd = open(argv[1], O_RDWR | O_NOCTTY | O_SYNC);
   int fd = open(argv[1], O_RDWR | O_NOCTTY);
 
   if (fd < 0) {
@@ -184,8 +184,15 @@ int main(int argc, char* argv[]) {
 #ifdef DEBUG
     fputs("Woken up by COM1 interrupt.\n", stdout);
 #endif
-    // read Interrupt Identification Register
+
+#ifdef DEBUG
     uint8_t tmp = in8(COM1_BASE_REG + SER_8250_REG_II);
+    printf("REG_II: %d\n", tmp);
+#else
+    // read Interrupt Identification Register
+    in8(COM1_BASE_REG + SER_8250_REG_II);
+#endif
+
     // unmask the interrupt, so we can get the next event
     InterruptUnmask(COM1, int_com1);
 
@@ -215,14 +222,6 @@ int main(int argc, char* argv[]) {
     break;
   }
 
-  int int_sys_clock;
-  if ( (int_sys_clock = InterruptAttachEvent(SYS_CLOCK, &event,
-        _NTO_INTR_FLAGS_TRK_MSK)) == -1) {
-    fprintf(stderr, "ERR InterruptAttachEvent(SYS_CLOCK...\n");
-    perror(NULL);
-    return EXIT_FAILURE;
-  }
-
   //struct timespec ts;  // nsec2timespec()
   uint64_t next_rising_edge_at;  // nanoseconds
   if (ClockTime(CLOCK_REALTIME, NULL, &next_rising_edge_at) == -1) {
@@ -237,19 +236,21 @@ int main(int argc, char* argv[]) {
   next_rising_edge_at = ( (next_rising_edge_at + (DTR_PERIOD_NS -1)) /
       DTR_PERIOD_NS ) * DTR_PERIOD_NS;
 
+  int int_sys_clock;
+  if ( (int_sys_clock = InterruptAttachEvent(SYS_CLOCK, &event,
+        _NTO_INTR_FLAGS_TRK_MSK)) == -1) {
+    fprintf(stderr, "ERR InterruptAttachEvent(SYS_CLOCK...\n");
+    perror(NULL);
+    return EXIT_FAILURE;
+  }
+
   // FIXME foundry27 does ClockAdjust() affects the period set by ClockPeriod() function?
   // I.e. the implementation of ClockPeriod is directly dependent only on
   // hardware cycle counters.
 
   // DTR generator
   for (;;) {
-#ifdef DEBUG
-    fputs("Before InterruptWait() for SYS_CLOCK.\n", stdout);
-#endif
     InterruptWait(0, NULL);
-#ifdef DEBUG
-    fputs("Woken up by SYS_CLOCK interrupt.\n", stdout);
-#endif
     InterruptUnmask(SYS_CLOCK, int_sys_clock);
 
     // get adjusted (by ClockAdjust()) current system time
@@ -279,6 +280,8 @@ int main(int argc, char* argv[]) {
       }
 
 #ifdef DEBUG
+      fputs("FIRST  ", stdout);
+      fsync(fileno(stdout));
       check_statuses(fd);
 #endif
 
@@ -299,6 +302,8 @@ int main(int argc, char* argv[]) {
       //    in8(COM1_BASE_REG + SER_8250_REG_MC) & ~BIT0);
 
 #ifdef DEBUG
+      fputs("SECOND ", stdout);
+      fsync(fileno(stdout));
       check_statuses(fd);
 #endif
     }

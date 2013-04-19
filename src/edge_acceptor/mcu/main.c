@@ -13,8 +13,9 @@
 //   interrupt latency is 6 cycles for MSP430x (== MSP430 with more than
 //   64k address space)
 
-// RS232 voltage levels
+// RS232 voltage levels etc.
 // http://www.epanorama.net/circuits/rspower.html
+// http://en.wikibooks.org/wiki/Serial_Programming/8250_UART_Programming
 
 #if FITKIT_VERSION == 2
 
@@ -37,7 +38,9 @@ sfrb(P1SEL2, P1SEL2_);
 sfrb(P2SEL2, P2SEL2_);
 #endif
 
-#define MEASUREMENTS 2
+// msp430 on FitKit has 8kB RAM
+#define MEASUREMENTS 500  // 1 measurement == 2x 4B == 8B
+                          // => maximum of cca 700 measurements
 #define COUNTER_MAX 0xFFFF
 
 #define MASTER BIT3
@@ -45,7 +48,8 @@ sfrb(P2SEL2, P2SEL2_);
 
 static uint16_t COUNTER32_LOWER = 0;
 #define COUNTER16 TAR
-#define COUNTER32 ((((uint32_t)COUNTER32_LOWER) >> 16) | (uint32_t)COUNTER16)
+#define COUNTER32 \
+  ((uint32_t)(((uint32_t)COUNTER32_LOWER) << 16) | (uint32_t)COUNTER16)
 
 static uint32_t master[MEASUREMENTS] = { 0 };
 static uint32_t slave[MEASUREMENTS]  = { 0 };
@@ -76,7 +80,6 @@ ISR(PORT1, isr_port1) {
   P1IFG &= ~MASTER;  // clear the interrupt flag for a specific pin
 
   static uint16_t edges = 0;
-  term_send_str_crlf("howk P1");  //FIXME
 
   if (edges < MEASUREMENTS)
     master[edges++] = COUNTER32;
@@ -89,7 +92,6 @@ ISR(PORT2, isr_port2) {
   P2IFG &= ~SLAVE;
 
   static uint16_t edges = 0;
-  term_send_str_crlf("howk P2");  //FIXME
 
   if (edges < MEASUREMENTS)
     slave[edges++] = COUNTER32;
@@ -114,7 +116,7 @@ int main(void) {
   initialize_hardware();
 
   #define FREQ 7372800 // Hz; must be corelated with number of
-                        // measurements, becase we have only 32b counter
+                       // measurements, becase we have only 32b counter
   //BCSCTL2 = SELM_2 | SELS | DIVM_0 | DIVS_1;  // MCLK = XT2CLK = 14.745 MHz, SMCLK = XT2CLK/2 = 7.3728 MHz
   //BCSCTL2 = SELM_2 | SELS | DIVM_1 | DIVS_1;  // MCLK = XT2CLK/2 = 7.3728 MHz, SMCLK = XT2CLK/2 = 7.3728 MHz
 
@@ -150,8 +152,8 @@ int main(void) {
   P1REN &= ~MASTER;  // disable pullup/pulldown resistor on pin
   P1SEL = 0;         // I/O function on all pins (if any pin is 1, interrupts are disabled)
   P1SEL2 = 0;        // I/O function on all pins (if any pin is 1, interrupts are disabled)
-  //P1IES &= ~MASTER;   // low2high transition FIXME what about negative voltage?
-  P1IES |= MASTER;   // high2low transition [pin itself 0V]
+  P1IES &= ~MASTER;   // low2high transition (negative voltage doesn't count)
+  //P1IES |= MASTER;   // high2low transition [pin itself 0V]
   P1IFG &= ~MASTER;  // clear the interrupt flag for a specific pin
   P1IE |= MASTER;    // enable interrupts for a specific pin
 
@@ -163,8 +165,8 @@ int main(void) {
   P2REN &= ~SLAVE;  // disable pullup/pulldown resistor on pin
   P2SEL = 0;        // I/O function on all pins (if any pin is 1, interrupts are disabled)
   P2SEL2 = 0;       // I/O function on all pins (if any pin is 1, interrupts are disabled)
-  //P2IES &= ~SLAVE;   // low2high transition
-  P2IES |= SLAVE;   // high2low transition [pin itself 0V]
+  P2IES &= ~SLAVE;   // low2high transition
+  //P2IES |= SLAVE;   // high2low transition [pin itself 0V]
   P2IFG &= ~SLAVE;  // clear the interrupt flag for a specific pin
   P2IE |= SLAVE;    // enable interrupts for a specific pin
 
@@ -176,39 +178,30 @@ int main(void) {
 
   -DTR => -8.542
   +DTR => 8.98
-
-  v zatezi
-    pull-up    +DTR => 3.96V
-               -DTR => -0.47V
-    no pull-up -DTR => -0.48V
-               +DTR => 3.96V
   */
 
-  //FIXME
-  //_BIS_SR(LPM0_bits + GIE);  // Enter LPM0 w/ interrupt
   // wait until arrays are filled (one of them will have (MAX -1) items in
   //   most cases)
-  while (state != FINISHED) {
-    //term_send_str_crlf("HOWK55");//FIXME
-    //delay_ms(200);
-  }
+  while (state != FINISHED);
+
+  P1IE &= ~MASTER;   // disable interrupts for a specific pin
+  P2IE &= ~SLAVE;    // disable interrupts for a specific pin
+  TACTL &= ~(BIT5 | BIT4);  // MCx; stop timer
 
   set_led_d6(1);
 
   static char s[64];
-  snprintf(s, 64, "current freq: %lu Hz", (uint32_t)FREQ);
+  snprintf(s, 64, "current freq: %lu Hz\n", (uint32_t)FREQ);
   term_send_str_crlf(s);
 
   uint16_t i;
   for (i = 0; i < MEASUREMENTS; ++i) {
-    sprintf(s, "M %lu", master[i]);
-    term_send_str_crlf(s);
-    sprintf(s, "S %lu", slave[i]);
+    sprintf(s, "M: %lu S: %lu", master[i], slave[i]);
     term_send_str_crlf(s);
   }
+  term_send_str_crlf("\nEND");
 
-  __disable_interrupt();  // disable all interrupts (GIE -> 0)
-
+  //_BIS_SR(LPM0_bits + GIE);  // Enter LPM0 w/ interrupt
   for (;;)
     terminal_idle();
 }

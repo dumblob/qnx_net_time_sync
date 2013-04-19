@@ -1,0 +1,13 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-19-155750
+
+no. 1
+
+max diff 0.18939 s
+clockPeriod() 0.2 ms
+
+QNX_station1 <-> switch <-> QNX_station2
+
+no network load
+no timing synchronization (neither from internet nor in between of QNX stations)

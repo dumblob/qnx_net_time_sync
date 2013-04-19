@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# "THE BEER-WARE LICENSE" (Revision 42):
 # <xpacne00@stud.fit.vutbr.cz> wrote this file. As long as you retain this
 # notice you can do whatever you want with this stuff. If we meet some day,
 # and you think this stuff is worth it, you can buy me a beer in return.
@@ -12,13 +13,13 @@ case "$1" in
   ntp)
     echo "NOT prepared yet" ;;
   ptp)
-    [ "$2" == 'recompile' ] && {
-      make -C ./orig/new/src clean
-      make -C ./orig/new/src
+    [ "$3" == 'recompile' ] && {
+      make -C ./ptp/new/src clean
+      make -C ./ptp/new/src
     }
     # be as verbose as possible
-    ./orig/new/src/ptpd2 -g -C -DVfS ;;
+    ./ptp/new/src/ptpd2 -g -b "$2" -C -DVfS ;;
     #./orig/new/src/ptpd2 -g -C -DVfS -b en0 ;;
   *)
-    echo "USAGE: $0 ntp|ptp|???" ;;
+    echo "USAGE: $0 (ntp <eth_device> [recompile]|ptp)" ;;
 esac
