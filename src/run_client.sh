@@ -21,5 +21,5 @@ case "$1" in
     ./ptp/new/src/ptpd2 -g -b "$2" -C -DVfS ;;
     #./orig/new/src/ptpd2 -g -C -DVfS -b en0 ;;
   *)
-    echo "USAGE: $0 (ntp <eth_device> [recompile]|ptp)" ;;
+    echo "USAGE: $0 (ptp <eth_device> [recompile]|ntp)" ;;
 esac

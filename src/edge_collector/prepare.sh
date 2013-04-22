@@ -1,3 +1,5 @@
+#!/bin/sh
+
 [ $# -eq 1 ] || {
   echo "USAGE: $0 <base_directory>"
   exit
@@ -17,13 +19,21 @@ cat > "$dir"/topology.info <<HERE_DOC
 #   settings, which wiring...)
 # measure: $time
 
+ClockPeriod(): ---------9219ns
+
+network load: 
+system load: 
+time synchronization: 
+FitKit calibration: 
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
 HERE_DOC
 cat > "$dir"/results.raw <<HERE_DOC
 # Results
 # measure: $time
+
 HERE_DOC
 
-vim "$dir"/topology.info
-vim -c 'set paste' "$dir"/results.raw
+vim -O -c 'set paste' "$dir"/topology.info "$dir"/results.raw
 
 echo "DONE with $dir/"

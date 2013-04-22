@@ -1,0 +1,13 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-22-141651
+
+ClockPeriod(): 9219
+
+network load: none
+system load: none (on one QNX host was SCADA system running, but almost without notice on CPU)
+time synchronization: PTP, 1s period, multicast, no PTP boundary/transparent clock
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+  QNX + ptp master <-> switch <-> QNX + ptp slave

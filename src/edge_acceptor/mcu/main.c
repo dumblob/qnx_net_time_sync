@@ -115,6 +115,8 @@ void fpga_initialized(void) {
 int main(void) {
   initialize_hardware();
 
+  // XIN crystal has 32.768MHz
+  // XT2IN crystal has 14.7456MHz
   #define FREQ 7372800 // Hz; must be corelated with number of
                        // measurements, becase we have only 32b counter
   //BCSCTL2 = SELM_2 | SELS | DIVM_0 | DIVS_1;  // MCLK = XT2CLK = 14.745 MHz, SMCLK = XT2CLK/2 = 7.3728 MHz

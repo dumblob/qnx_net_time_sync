@@ -7,11 +7,11 @@ set grid
 set style data lines
 
 set key
-set title "measurement {{{N}}}"
+set title "measurement 2013-04-19-155750"
 set xlabel "sample pairs";  set ylabel "time difference [ms]"
-#set xlabel "sample pairs";  set ylabel "time difference [1/{{{F}}} s]"
+#set xlabel "sample pairs";  set ylabel "time difference [1/7372800 s]"
 plot "results.diff" using 1:2 title "difference [ms]"
-#plot "results.diff" using 1:2 title "difference [1/{{{F}}} s]"
+#plot "results.diff" using 1:2 title "difference [1/7372800 s]"
 
 #set nokey
 #set title "some title..."

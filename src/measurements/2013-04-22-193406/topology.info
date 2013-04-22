@@ -1,13 +1,14 @@
 # Topology specification (how many and which components, which
 #   settings, which wiring...)
-# measure: 2013-04-19-155750
+# measure: 2013-04-22-193406
 
-clockPeriod(): 200000 ns
+ClockPeriod(): 9219ns
 
 network load: none
 system load: none
-# neither from internet nor in between of QNX stations
 time synchronization: none
 FitKit calibration: none
 
-QNX <-> switch <-> QNX
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+  QNX <-> switch <-> QNX
+

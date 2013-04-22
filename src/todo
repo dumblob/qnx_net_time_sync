@@ -11,6 +11,12 @@ bc thesis
     policies) is always four times the clock period (this isn't
     changeable).
   reference mereni (od CZ.NICu, ...)
+  switch Cisco 3560
+  traffic generator&analyzer Spirent SPT-2000A
+  add thanks to Vaclav Simek (access to soldering station etc. at any time)
+
+!!!! inspirovat se v BP clankem !!!!
+  http://ptpd.sourceforge.net/doc.html
 
 add to Alfresco
   http://www.eecis.udel.edu/~mills/ptp.html

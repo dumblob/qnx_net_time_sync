@@ -36,6 +36,7 @@
 #include <hw/inout.h>  // in8()
 #include <sys/neutrino.h>  // ClockPeriod()
 #include <stdint.h>  // uint8_t uint64_t
+#include <time.h>  // clock_getres()
 //#include <atomic.h>  // atomic_add() atomic_sub()
 
 #define BIT0 0x1
@@ -67,8 +68,8 @@
 #define SER_8250_IIR_NO_INT_PENDING BIT0
 #define SER_8250_IIR_RX_AVAILABLE   BIT2
 
-//FIXME does 0.5ms brake our Atom PC?
-#define CLOCK_PERIOD_NS 200000
+// 1000000ns by default; minimal supported value by QNX is 10000ns
+#define CLOCK_PERIOD_NS 40000
 #define DTR_PERIOD_NS   1000000000
 
 void check_statuses(int fd) {
@@ -126,10 +127,22 @@ int main(int argc, char* argv[]) {
   };
 
   if (ClockPeriod(CLOCK_REALTIME, &new_clockperiod, NULL, 0) == -1) {
-    fprintf(stderr, "ERR Could not open device.\n");
+    fprintf(stderr, "ERR ClockPeriod(CLOCK_REALTIME....\n");
     perror(NULL);
     return EXIT_FAILURE;
   }
+
+  struct timespec ts;  // nsec2timespec()
+
+  // only to inform user of the accurate period (which is a little bit
+  //   different from the one set)
+  if (clock_getres(CLOCK_REALTIME, &ts) == -1) {
+    fprintf(stderr, "ERR clock_getres(CLOCK_REALTIME....\n");
+    perror(NULL);
+    return EXIT_FAILURE;
+  }
+
+  printf( "ClockPeriod(): %ld\n", res.tv_nsec);
 
   #define BUF_SIZE 512
   char buf[BUF_SIZE];
@@ -222,7 +235,6 @@ int main(int argc, char* argv[]) {
     break;
   }
 
-  //struct timespec ts;  // nsec2timespec()
   uint64_t next_rising_edge_at;  // nanoseconds
   if (ClockTime(CLOCK_REALTIME, NULL, &next_rising_edge_at) == -1) {
     fprintf(stderr, "ERR ClockTime(...next_rising_edge_at\n");
