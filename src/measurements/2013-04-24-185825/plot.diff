@@ -1,0 +1,21 @@
+set terminal png size 900,600
+set output "results.diff.png"
+#set output "results.ps"
+
+#set size 1,2  # pomer asi 1:1
+set grid
+#set style data lines
+#set style data lines linecolor rgb "red"
+set style line 1 linecolor rgb "#FF0000"
+
+set key
+set title "measurement 2013-04-24-185825"
+set xlabel "master-slave sample pairs";  set ylabel "time difference [ms]"
+#set xlabel "sample pairs";  set ylabel "time difference [1/7372800 s]"
+plot "results.diff" using 1:2 title "difference [ms]" with lines
+#plot "results.diff" using 1:2 title "difference [1/7372800 s]" with dots
+
+#set nokey
+#set title "some title..."
+#set xlabel "x axis";  set ylabel "y axis"
+#plot "in00.dat" using 2:3

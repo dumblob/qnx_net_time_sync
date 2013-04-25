@@ -4,14 +4,18 @@ set output "results.both.png"
 
 #set size 1,2  # pomer asi 1:1
 set grid
-set style data lines
+#set style data lines
+#set style data lines linecolor rgb "red"
+set style line 1 linecolor rgb "#FF0000"
+set style line 2 linecolor rgb "#0000FF"
 
 set key
 set title "measurement 2013-04-22-141651"
 set xlabel "sample";  set ylabel "time offset [ms]"
 #set xlabel "sample";  set ylabel "time offset [1/7372800 s]"
-plot "results.both" using 1:2 title "master", \
-     "results.both" using 1:3 title "slave" with dots
+plot "results.both" using 1:2 title "master" with lines, \
+     "results.both" using 1:3 title "slave" with lines
+#     "results.both" using 1:3 title "slave" with dots
 
 #set nokey
 #set title "some title..."

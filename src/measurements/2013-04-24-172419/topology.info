@@ -1,0 +1,17 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-24-172419
+
+ClockPeriod(): 39390ns
+
+network load: 100% through cable one way (from PTP master switch to PTP slave switch)
+system load: none
+time synchronization: PTP
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+    [spirent_uni-directional]
+    QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave
+                                           <-> spirent receiver
+                                <-> spirent transmitter
+

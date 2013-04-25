@@ -142,7 +142,7 @@ int main(int argc, char* argv[]) {
     return EXIT_FAILURE;
   }
 
-  printf( "ClockPeriod(): %ld\n", res.tv_nsec);
+  printf( "ClockPeriod(): %ld\n", ts.tv_nsec);
 
   #define BUF_SIZE 512
   char buf[BUF_SIZE];

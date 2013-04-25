@@ -1,0 +1,16 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-25-151136
+
+ClockPeriod(): 39390ns
+
+network load: 100% on PTP slave (ICMP destination unreachable)
+system load: CPU0 60%; CPU1 65%
+time synchronization: PTP
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+    QNX + ptp master <-> switch <-> QNX + ptp slave + receiver of spirent
+                                                      dummy packets
+                                <-> spirent transmitter
+

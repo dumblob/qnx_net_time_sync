@@ -19,11 +19,13 @@ cat > "$dir"/topology.info <<HERE_DOC
 #   settings, which wiring...)
 # measure: $time
 
-ClockPeriod(): ---------9219ns
+ClockPeriod(): ---------39390ns
 
 network load: 
 system load: 
 time synchronization: 
+PTP/NTP daemon priority: 
+edge_generator priority: 
 FitKit calibration: 
 
 !!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
@@ -35,5 +37,8 @@ cat > "$dir"/results.raw <<HERE_DOC
 HERE_DOC
 
 vim -O -c 'set paste' "$dir"/topology.info "$dir"/results.raw
+
+# TODO -f is GNU-specific; use `cd; pwd; cd $OLDPWD' approach
+"$(dirname "$(readlink -f "$0")")/gen_charts.sh" "$dir/"
 
 echo "DONE with $dir/"

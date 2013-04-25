@@ -31,7 +31,7 @@ substitute_markers() {
 
 rm -f "$res_dir"/stats || exit 1
 
-for kind in 'both' 'diff'; do
+for kind in 'both' 'diff' 'sec'; do
   "$bdir"/gen_stats.py $kind "$res_dir" "$freq" > \
     "$res_dir/results.$kind" || exit 1
 

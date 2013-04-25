@@ -14,6 +14,19 @@ bc thesis
   switch Cisco 3560
   traffic generator&analyzer Spirent SPT-2000A
   add thanks to Vaclav Simek (access to soldering station etc. at any time)
+  Atom system was totally unusefull when ethernet load was 100%
+    nothing worked and QNX always stopped working (freeze) after a short
+    period of time while running demanding applications showed different errors
+    then the QNX host with Atom started to fail almost in every load - after
+    a few seconds of running compilation and the like the system
+    inevitably hanged. Note that these problems appeared both with ethernet
+    cable connected and disconnected
+  nice - pro usera jine nez roota, ale mereni pod rootem, takze na max!
+  u PTP zatizeni master => pruser
+                 slave => temer bez rozdilu
+  u NTP zatizeni master => temer bez rozdilu
+                 slave => pruser (protoze tam ten vymenny mechanismus
+                                  zprav zacina opacne)
 
 !!!! inspirovat se v BP clankem !!!!
   http://ptpd.sourceforge.net/doc.html

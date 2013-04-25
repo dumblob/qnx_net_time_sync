@@ -1,0 +1,18 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-25-175014
+
+ClockPeriod(): 39390ns
+
+network load: 100% PTP master
+system load: CPU0 73% CPU1 24%
+time synchronization: PTP
+PTP/NTP daemon priority: -n-25
+edge_generator priority: -n-25
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+    QNX + ptp slave <-> switch <-> QNX + ptp master + receiver of spirent
+                                                      dummy packets
+                                <-> spirent transmitter
+

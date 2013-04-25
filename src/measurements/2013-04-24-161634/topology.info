@@ -1,0 +1,17 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-24-161634
+
+ClockPeriod(): 39390ns
+
+network load: 100% through switch
+system load: none
+time synchronization: PTP
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+    [spirent_bi-directional]
+    QNX + ptp <-> switch <-> QNX + ptp
+                         <-> spirent transceiver
+                         <-> spirent transceiver
+
