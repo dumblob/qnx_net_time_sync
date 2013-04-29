@@ -21,12 +21,13 @@ cat > "$dir"/topology.info <<HERE_DOC
 
 ClockPeriod(): ---------39390ns
 
+measure period: ---------130s
 network load: 
 system load: 
 time synchronization: 
-PTP/NTP daemon priority: 
-edge_generator priority: 
-FitKit calibration: 
+PTP/NTP daemon priority: ------------- -25
+edge_generator priority: ------------- -28
+FitKit calibration: -------none
 
 !!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
 HERE_DOC

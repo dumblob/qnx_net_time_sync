@@ -4,22 +4,29 @@ from math import fabs
 import sys
 import numpy
 
-ALLOWED_ACTIONS = ('both', 'diff', 'sec')
+ALLOWED_ACTIONS = ('both', 'diff', 'sampling_period')
 
 if len(sys.argv) != 4:
-  print('USAGE: ' + sys.argv[0] + ' (both|diff|sec) <dir-with-results.raw> <freq>')
+  print('USAGE: ' + sys.argv[0] + ' (both|diff|sampling_period) <dir-with-results.raw> <freq>')
   exit(0)
 
 action, res_dir, freq = sys.argv[1], sys.argv[2], float(sys.argv[3])
 
 if action not in ALLOWED_ACTIONS:
-  print('Unknown action: ' + action, file=sys.stderr)
+  print('Unknown action: ' + action, file = sys.stderr)
   exit(1)
 
 output_degree = 1000  # 1 ~ seconds
                       # 1000 ~ ms
                       # 1000000 ~ us
                       # ...
+
+def print_master_slave(i, M, S, **for_print):
+  print(str(i) + ' ' + str((float(M) * output_degree)/freq) + ' ' +
+                       str((float(S) * output_degree)/freq), **for_print)
+
+def print_diff(i, diff, **for_print):
+  print(str(i) + ' ' + str((float(diff) * output_degree)/freq), **for_print)
 
 # mode = 'r'
 with open(res_dir + '/results.raw') as f:
@@ -28,47 +35,92 @@ with open(res_dir + '/results.raw') as f:
   last_master = None
   last_slave = None
 
+  _M_orig = 0
+  _S_orig = 0
+  M_overflows = 0
+  S_overflows = 0
+
   for line in f:
     if line.startswith('M'):
       l = line.split(sep = None)
 
+      M_orig = int(l[1])  # master
+      S_orig = int(l[3])  # slave
+
+      # our counter in FitKit is 32bit (simulated from 16bit hardware counter)
+      #   => correct the values
+      if M_orig < _M_orig:
+        M_overflows += 1
+        #M = ((_M_count * (2**32)) - _M) + M
+
+      if S_orig < _S_orig:
+        S_overflows += 1
+        #S = ((_S_count * (2**32)) - _S) + S
+
+      _M_orig = M_orig
+      _S_orig = S_orig
+
+      M = M_overflows * (2**32) + M_orig
+      S = S_overflows * (2**32) + S_orig
+
       if action == 'both':
         if 'master' not in all_results:
           all_results['master'] = []
-        all_results['master'].append(int(l[1]))
+        all_results['master'].append(M)
         if 'slave' not in all_results:
           all_results['slave'] = []
-        all_results['slave'].append(int(l[3]))
-        print(str(i) + ' ' + str((float(l[1]) * output_degree)/freq) + ' ' +
-                             str((float(l[3]) * output_degree)/freq))
+        all_results['slave'].append(S)
+        print_master_slave(i, M, S)
 
       elif action == 'diff':
-        diff = int(l[3]) - int(l[1])
-        #diff = fabs(int(l[3]) - int(l[1]))
+        diff = S - M
+        #diff = fabs(S - M)
         if 'diff' not in all_results:
           all_results['diff'] = []
         all_results['diff'].append(diff)
-        print(str(i) + ' ' + str((float(diff) * output_degree)/freq))
+        print_diff(i, diff)
 
-      if action == 'sec':
+      if action == 'sampling_period':
         if 'master' not in all_results:
           all_results['master'] = []
-        tmp = int(l[1])
+        tmp = M
         if last_master != None:
           all_results['master'].append(tmp - last_master)
         last_master = tmp
         if 'slave' not in all_results:
           all_results['slave'] = []
-        tmp = int(l[3])
+        tmp = S
         if last_slave != None:
           all_results['slave'].append(tmp - last_slave)
         last_slave = tmp
         if all_results['master'] and all_results['slave']:
-          print(str(i) + ' ' +
-              str((float(all_results['master'][-1]) * output_degree)/freq) + ' ' +
-              str((float(all_results['slave'][-1])  * output_degree)/freq))
+          print_master_slave(i, all_results['master'][-1],
+                                all_results['slave'][-1])
 
       i += 1
+
+with open(res_dir + '/results.' + action + '.filtered', mode = 'w') as f:
+  if action == 'both' or action == 'sampling_period':
+    M_two_standard_deviations = 2 * numpy.std(all_results['master'])
+    M_mean = numpy.mean(all_results['master'])
+    S_two_standard_deviations = 2 * numpy.std(all_results['slave'])
+    S_mean = numpy.mean(all_results['slave'])
+
+    for M, S, i in zip(
+        all_results['master'], all_results['slave'], range(sys.maxsize)):
+      if (M_mean - M_two_standard_deviations) < M < \
+         (M_mean + M_two_standard_deviations) and \
+         (S_mean - S_two_standard_deviations) < S < \
+         (S_mean + S_two_standard_deviations):
+        print_master_slave(i, M, S, file = f)
+
+  if action == 'diff':
+    D_two_standard_deviations = 2 * numpy.std(all_results['diff'])
+    D_mean = numpy.mean(all_results['diff'])
+    for D, i in zip(all_results['diff'], range(sys.maxsize)):
+      if (D_mean - D_two_standard_deviations) < D < \
+         (D_mean + D_two_standard_deviations):
+        print_diff(i, D, file = f)
 
 with open(res_dir + '/stats', mode = 'a') as f:
   print(action, file = f)
@@ -80,7 +132,13 @@ with open(res_dir + '/stats', mode = 'a') as f:
     max_seconds = float(max(l))/float(freq)
     min_seconds = float(min(l))/float(freq)
 
+    if M_overflows > 0 or S_overflows > 0:
+      overflow = 'Yes'
+    else:
+      overflow = 'No'
+
     print('  ' + k + '\n' +
+        '    FitKit 32bit counter overflow occured: ' + overflow + '\n' +
         '    MAX: ' + str(max_seconds * output_degree) + 'ms\n' +
         '    MIN: ' + str(min_seconds * output_degree) + 'ms\n' +
         '    MEAN: ' + str(mean * output_degree) + 'ms\n' +

@@ -1,28 +1,33 @@
 both
-  slave
-    MAX: 510440.20128038194ms
-    MIN: 11379.275580512152ms
-    MEAN: 260908.938211ms
-    MEDIAN: 260908.187052ms
   master
+    FitKit 32bit counter overflow occured: No
     MAX: 510442.1142578125ms
     MIN: 11378.910183376736ms
     MEAN: 260910.524501ms
     MEDIAN: 260910.53616ms
+  slave
+    FitKit 32bit counter overflow occured: No
+    MAX: 510440.20128038194ms
+    MIN: 11379.275580512152ms
+    MEAN: 260908.938211ms
+    MEDIAN: 260908.187052ms
 diff
   diff
+    FitKit 32bit counter overflow occured: No
     MAX: 0.741238064236111ms
     MIN: -3.330620659722222ms
     MEAN: -1.58629014757ms
     MEDIAN: -1.79931640625ms
-sec
-  master
-    MAX: 1000.1695421006945ms
-    MIN: 1000.1063368055557ms
-    MEAN: 1000.12666147ms
-    MEDIAN: 1000.12152778ms
+sampling_period
   slave
+    FitKit 32bit counter overflow occured: No
     MAX: 1001.1950683593751ms
     MIN: 999.5012749565973ms
     MEAN: 1000.12209559ms
     MEDIAN: 1000.09941949ms
+  master
+    FitKit 32bit counter overflow occured: No
+    MAX: 1000.1695421006945ms
+    MIN: 1000.1063368055557ms
+    MEAN: 1000.12666147ms
+    MEDIAN: 1000.12152778ms
