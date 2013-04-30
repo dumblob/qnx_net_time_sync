@@ -21,6 +21,8 @@ bc thesis
     a few seconds of running compilation and the like the system
     inevitably hanged. Note that these problems appeared both with ethernet
     cable connected and disconnected
+  after 18hours of frames with non-matching MAC addr 100% bandwidth load,
+    the QNX C2D PC stopped to respond to ARPs
   nice - pro usera jine nez roota, ale mereni pod rootem, takze na max!
   u PTP zatizeni master => pruser
                  slave => temer bez rozdilu

@@ -11,7 +11,12 @@
 
 case "$1" in
   ntp)
-    echo "NOT prepared yet" ;;
+    # high debug level + write everything to stdout/stderr instead of log
+    # no fork
+    # listen on interface
+    # allow first adjustment to be big
+    ntpd -dddddddd -n -I "$2" -g -c ./ntp/ntp.conf.master
+    ;;
   ptp)
     [ "$3" == 'recompile' ] && {
       make -C ./ptp/new/src clean
@@ -20,5 +25,5 @@ case "$1" in
     # be as verbose as possible
     ./ptp/new/src/ptpd2 -G -b "$2" -C -DVfS ;;
   *)
-    echo "USAGE: $0 (ptp <eth_device> [recompile]|ntp)" ;;
+    echo "USAGE: $0 (ptp <eth_device> [recompile]|ntp <eth_device>)" ;;
 esac
