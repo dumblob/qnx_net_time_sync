@@ -1,0 +1,19 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-05-06-170438
+
+ClockPeriod(): 39390ns
+
+measure period: 1s
+network load: none
+system load: none
+time synchronization: NTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+NTP not fully synchronized (was running cca 5 minutes)
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+      QNX + ptp master <-> switch <-> QNX + ptp slave
+
