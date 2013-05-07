@@ -12,6 +12,9 @@ PTP/NTP daemon priority: -25
 edge_generator priority: -28
 FitKit calibration: none
 
+traffic load started cca 1 minute before the measurement started
+NTP was already running cca 40 minut at the time of measurement start
+
 !!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
       [spirent_uni-directional]
       QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave

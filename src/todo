@@ -23,6 +23,13 @@ bc thesis
     cable connected and disconnected
   after 18hours of frames with non-matching MAC addr 100% bandwidth load,
     the QNX C2D PC stopped to respond to ARPs
+  weird behaviour of the network (maybe Cisco switch 3560?) which started to
+    send frames not only to the traffic destination, but also to all other
+    ports -> the network card on QNX stations had full bandwidth filled with
+      frames not meant for them
+    reason:
+      maybe because of the high traffic, the ARPs stopped to "work" and switch
+      decided to send frames everywhere
   nice - pro usera jine nez roota, ale mereni pod rootem, takze na max!
   u PTP zatizeni master => pruser
                  slave => temer bez rozdilu
