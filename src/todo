@@ -38,6 +38,8 @@ bc thesis
     try adjusting the dispatch period of PTP/NTP messages and compare them
   simulace PTP/NTP
     http://www.eecis.udel.edu/~mills/ntp/html/ntpdsim.html
+  zvetseninu pily v grafech + hypotezy
+  zavest terminologii (NTP master/slave apod.)
 
 !!!! inspirovat se v BP clankem !!!!
   http://ptpd.sourceforge.net/doc.html
