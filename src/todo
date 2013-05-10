@@ -5,7 +5,7 @@ measure
   use PTPd in "relay" mode
 
 bc thesis
-  NTP description
+  NTP description + drastic configuration
   inturrupt handler each 1ms (== clock period == QNX "tick"), min == 10us
     The timeslice rate (for “round-robin” and “other” scheduling
     policies) is always four times the clock period (this isn't
@@ -30,6 +30,12 @@ bc thesis
     reason:
       maybe because of the high traffic, the ARPs stopped to "work" and switch
       decided to send frames everywhere
+  QNX si neporadi se 100% load na interface => reboot needed
+  cca after 10 minutes of the 100% traffic on the rt0 interface of NTP master computer,
+    the connection stopped to work - reboot of QNX needed (hypoteza: mozna by stacilo
+    restartovat proces obstaravajici sitovou kartu; hypoteza: sitova karta se dostala
+    do nekonzistentniho stavu a proto QNX potom nekolikrat nemohl najet
+    ani kdyz byl PC na chvili vytazeny ze zasuvky)
   nice - pro usera jine nez roota, ale mereni pod rootem, takze na max!
   u PTP zatizeni master => pruser
                  slave => temer bez rozdilu

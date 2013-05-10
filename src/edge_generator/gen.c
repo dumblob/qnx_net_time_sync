@@ -71,6 +71,7 @@
 // 1000000ns by default; minimal supported value by QNX is 10000ns
 #define CLOCK_PERIOD_NS 40000
 #define DTR_PERIOD_NS   1000000000
+//#define DTR_PERIOD_NS 130000000000
 
 void check_statuses(int fd) {
   int data = 0;

@@ -15,7 +15,7 @@ case "$1" in
     # no fork
     # listen on interface
     # allow first adjustment to be big
-    ntpd -dddddddd -n -I "$2" -g -c ./ntp/ntp.conf.master
+    ntpd -dddddddd -n -I "$2" -g -c ./ntp/ntp.conf.client
     ;;
   ptp)
     [ "$3" == 'recompile' ] && {

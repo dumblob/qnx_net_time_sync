@@ -1,0 +1,22 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-05-10-151742
+
+ClockPeriod(): 39390ns
+
+measure period: 130s
+network load: 100% through shared wire between 2 switches both way
+system load: none
+time synchronization: NTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+ntpd was started 15 minutes before the measurement started
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+      [spirent_bi-directional]
+      QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave
+                                             <-> spirent transceiver
+                                  <-> spirent transceiver
+

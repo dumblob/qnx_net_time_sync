@@ -1,9 +1,16 @@
 tinker panic 0  # do not panic even if the clock jump would be giant
-tinker minpoll 0  # 2^minpoll seconds; the lower bound (maxpoll can't be set :()
-#FIXME
+tinker minpoll 0  # 2^minpoll seconds; the lower bound
 tinker maxpoll 1  # 2^maxpoll seconds
 
-server localhost iburst  # iburst ~ the most promising servers
-fudge localhost stratum 0  # we are the "atomic clock"
+#restrict 10.0.0.0 mask 255.255.255.0 nomodify notrap
+#restrict localhost  # allow full access to itself
+
+server 127.127.1.0 prefer minpoll 4 maxpoll 4
+#iburst
+fudge 127.127.1.0 stratum 0 refid MooN  # use local CPU clock as reference
+
+#broadcast 10.0.0.255
+
+driftfile /root/ntpd.drift
 
 # vim: set ft=conf:

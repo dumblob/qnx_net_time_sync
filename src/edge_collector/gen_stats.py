@@ -80,7 +80,7 @@ with open(res_dir + '/results.raw') as f:
         all_results['diff'].append(diff)
         print_diff(i, diff)
 
-      if action == 'sampling_period':
+      elif action == 'sampling_period':
         if 'master' not in all_results:
           all_results['master'] = []
         tmp = M

@@ -1,0 +1,20 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-05-09-133829
+
+ClockPeriod(): 39390ns
+
+measure period: 1s
+network load: 100% on NTP master (ICMP echo reply)
+system load: CPU0 6% idle CPU1 92% idle
+time synchronization: NTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+ntpd was running 7 minutes; switch was Cisco 3960
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+        QNX + ntp slave <-> switch <-> QNX + ntp master + receiver of spirent
+                                                          dummy packets
+                                   <-> spirent transmitter

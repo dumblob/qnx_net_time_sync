@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2012.12.20)  24 JAN 2013 12:25
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.4.8)  10 MAY 2013 08:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -345,18 +345,18 @@ LaTeX Font Warning: Size substitutions with differences
  ) 
 Here is how much of TeX's memory you used:
  3392 strings out of 493488
- 42306 string characters out of 3146891
- 102526 words of memory out of 3000000
+ 42306 string characters out of 3146893
+ 104216 words of memory out of 3000000
  6641 multiletter control sequences out of 15000+200000
  11041 words of font info for 31 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 37i,5n,26p,473b,143s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 37i,5n,26p,581b,143s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf-dist/fonts/enc/dvips/base/8a.enc}</usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/publi
 c/cs/csbx12.pfb></usr/share/texmf-dist/fonts/type1/public/cs/csr10.pfb></usr/sh
 are/texmf-dist/fonts/type1/public/cs/csti10.pfb></usr/share/texmf-dist/fonts/ty
 pe1/urw/helvetic/uhvr8a.pfb>
-Output written on projekt.pdf (4 pages, 55454 bytes).
+Output written on projekt.pdf (4 pages, 55810 bytes).
 PDF statistics:
  44 PDF objects out of 1000 (max. 8388607)
  30 compressed objects within 1 object stream
