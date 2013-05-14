@@ -5,7 +5,7 @@
 ClockPeriod(): 39390ns
 
 measure period: 130s
-network load: 100% through shared wire [NTP slave switch <-> NTP master switch]
+network load: 100% through shared wire [NTP slave switch -> NTP master switch]
 system load: none
 time synchronization: NTP
 PTP/NTP daemon priority: -25

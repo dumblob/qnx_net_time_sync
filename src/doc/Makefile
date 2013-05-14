@@ -18,8 +18,9 @@ header:
 #FIXME add backref from hyperref package to citations
 # article | report | book | memoir | letter | slides (transparent folie)
 # date "+%d.%m.%Y"
-content:
+_content:
 	pandoc -S -s --toc -N --section-divs --no-tex-ligatures \
+		--template template.latex \
 		--variable lang=czech \
 		--variable date="$(shell date "+%x")" \
 		--variable geometry=a4paper \
@@ -29,17 +30,39 @@ content:
 		--variable fontsize=11pt \
 		--variable documentclass=report \
 		-f markdown -t latex -o - $(CONTENT).markdown | \
-		sed -r 's/\(([0-9]+)\)/{[}\1{]}/g' > $(CONTENT).tex
-	pdflatex $(CONTENT).tex > /dev/null
-	pdflatex $(CONTENT).tex > /dev/null
-	rm -f \
-		$(CONTENT).tex \
-		$(CONTENT).aux \
-		$(CONTENT).log \
-		$(CONTENT).out \
-		$(CONTENT).toc
+		sed -r 's/\(([0-9]+)\)/{[}\1{]}/g' | \
+		awk -F'\n' '{ \
+			if ($$0 ~ /\\def\\labelenumi[{][(]\\arabic[{]enumi[}][)][}]/) { \
+				print last_match content; \
+				last_match = $$0; \
+				content = "" \
+			} \
+			else { \
+				content = content "\n" $$0 \
+			} \
+		} \
+		END { \
+			print "\\def\\labelenumi{{[}\\arabic{enumi}{]}}"; \
+			print content \
+		}' | \
+		sed -r 's|(\\includegraphics)(\{fig/ntppacket00.png\})|\1[width=80mm]\2|' \
+		> $(CONTENT).tex
+	pdflatex -interaction batchmode -shell-escape $(CONTENT).tex > /dev/null || { \
+		echo 'Look at *.log and try to correct the escaping mistakes etc.'; false; }
+	pdflatex -shell-escape $(CONTENT).tex > /dev/null
+
+content: _content clean
 
 clean:
+	rm -f \
+		$(CONTENT).aux \
+		$(CONTENT).dvi \
+		$(CONTENT).log \
+		$(CONTENT).out \
+		$(CONTENT)-pics.pdf \
+		$(CONTENT).tex \
+		$(CONTENT).toc
+
+distclean: clean
 	make -C $(HEADER_PATH) clean
 	rm -f $(CONTENT).pdf $(DOCNAME).pdf
-
