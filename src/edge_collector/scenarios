@@ -1,0 +1,48 @@
+NTP
+  bez spirent
+    8 minutes
+      QNX + ptp master <-> switch <-> QNX + ptp slave
+
+  spirent
+    18 hours
+      [spirent_bi-directional]
+      QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave
+                                             <-> spirent transceiver
+                                  <-> spirent transceiver
+      [spirent_uni-directional]
+      QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave
+                                             <-> spirent receiver
+                                  <-> spirent transmitter
+      [spirent_uni-directional]
+      QNX + ptp master <-> switch <-> switch <-> QNX + ptp slave
+                                             <-> spirent transmitter
+                                  <-> spirent receiver
+
+    8 minutes
+      #performance of PTP/NTP QNX implementation
+        QNX + ptp master <-> switch <-> QNX + ptp slave + receiver of spirent
+                                                          dummy packets
+                                    <-> spirent transmitter
+        QNX + ptp slave <-> switch <-> QNX + ptp master + receiver of spirent
+                                                          dummy packets
+                                   <-> spirent transmitter
+
+THOUGHTS
+  "calibration" (establishing the accuracy of the FitKit crystal) using
+    GPS periodical edge generator
+  influence of decreasing and increasing (16 seconds like NTP) the PTP period
+  QNX + ptp master <-> QNX PTP relay/transparent <-> QNX + ptp slave
+  QNX + ntp master stratum 0 <-> QNX NTP master stratum 1 <-> QNX + ntp slave
+                                                                    updating
+                                                                    from
+                                                                    stratum 1
+
+measurements was first done after at least 10 minutes of synchronization
+  using PTP above protocols and 30 minutes (though the accuracy si highly
+    dependent on the intial frequency error - see
+    http://www.ntp.org/ntpfaq/NTP-s-algo.htm#FIG-NTP-INIT) of
+    synchronization using NTP
+  on isolated LAN segment consisting only from switches
+  describe in detail the configuration for PTP and NTP used for measurements
+  PTP: specify inbound + outbound latency in nsec (compesate e.g. sockets usage)
+    ptpd -l IN,OUT
