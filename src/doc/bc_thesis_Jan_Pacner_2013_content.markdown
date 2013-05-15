@@ -303,7 +303,7 @@ loop forever:
 ~~~~~~~~~~~~~~~~~
 
 \label{ntpd_conf}
-Konfigurace démona NTPd v\ případě `master` stanice obsahovala především nastavení ovladače pro přesný zdroj času, kterým byl oscilátor dostupný v\ CPU. Tento ovladač byl označen jako stratum\ 0 pro lokální instanci NTPd, která podle něho nastavovala čas. Je zřejmé, že tento princip má zajímavé důsledky, jelikož se jedná o FIR filtr, tedy ovlivňování sama sebou. V\ měřeních je tento problém viditelný. Konfigurace `slave` obsahovala pouze adresu `master` stanice, která z\ pohledu `slave` byla stratum\ 1 serverem.
+Konfigurace démona NTPd v\ případě `master` stanice obsahovala především nastavení ovladače pro přesný zdroj času, kterým byl oscilátor dostupný v\ CPU. Tento ovladač byl označen jako stratum\ 0 pro lokální instanci NTPd, která podle něho nastavovala čas. Je zřejmé, že tento princip má zajímavé důsledky, jelikož se jedná o IIR filtr, tedy ovlivňování sama sebou. V\ měřeních je tento problém viditelný. Konfigurace `slave` obsahovala pouze adresu `master` stanice, která z\ pohledu `slave` byla stratum\ 1 serverem.
 
 Měření byla provedena v\ různých síťových topologiích a to nejprve bez síťového zatížení, se zatížením LAN sítě a nakonec se zatížením samotných `master` a `slave` stanic. Pro zvýraznění trendu a extrémů jsou body v\ grafech spojeny. Šipky u\ přerušované čáry v\ grafech topologií vyznačují směr toku paketů síťové zátěže. Synchronizační protokoly byly spuštěny vždy alespoň patnáct minut před započetím měření, pokud není uvedeno jinak. U\ některých měření se objevily nežádoucí chyby např. ve třech prvních vzorcích, a tyto byly ručně odfiltrovány, jelikož zabraňovaly zásadním způsobem v\ zobrazení ostatních detailů měření. Veškerá zde neuvedená měření lze nalézt v\ příloze\ `A` včetně nefiltrovaných a neupravovaných variant. Všechna měření jsou převedena na reálný čas vzhledem ke krystalu ve FITkitu, který nebyl kalibrovaný, a tedy pokud se délka periody vystavování hrany naměřené z\ master stanice liší pro různé tyto délky přibližně N-násobně, je zjevné, že se jedná o nepřesný přepočet frekvence oscilátoru přítomném ve FITkitu na reálný čas.
 
@@ -429,7 +429,7 @@ Zapojení: 1x switch a generátor síťového zatížení na `slave`
 
     \FloatBarrier
 
-    Zde je na `master` vidět jak působí NTP samo na sebe (FIR filtr), tedy lokální systémové hodiny, ačkoliv byla zatěžována stanice `slave`.
+    Zde je na `master` vidět jak působí NTP samo na sebe (IIR filtr), tedy lokální systémové hodiny, ačkoliv byla zatěžována stanice `slave`.
 
     ![Délka periody mezi jednotlivými vzorky - filtrováno $1 \sigma$ \label{measure15}](../measurements/2013-05-09-143418/results.sampling_period.filtered.ps)
 
