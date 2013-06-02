@@ -14,6 +14,12 @@
 //     interrupt latencies occur
 //   a typical example is USB legacy support
 
+// QNX character devices (+ how to test RS232)
+// http://www.qnx.com/developers/docs/qnx_4.25_docs/qnx4/user_guide/chardev.html
+
+// QNX interrupt handlers
+// http://www.qnx.com/developers/docs/6.4.0/neutrino/prog/inthandler.html
+
 // RAW serial programming (without 8250 driver) on QNX
 // http://www.openqnx.com/phpbbforum/viewtopic.php?f=11&t=8953&sid=0c13b5a98982a7bbff37a3ccb0026561&start=15
 

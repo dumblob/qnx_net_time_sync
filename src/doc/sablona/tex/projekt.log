@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.5.13)  15 MAY 2013 08:48
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.5.29)  2 JUN 2013 08:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -354,7 +354,7 @@ pdfTeX warning: pdflatex: No flags specified for non-embedded font `Helvetica'
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/te
 xmf-dist/fonts/type1/public/cs/csbx12.pfb></usr/share/texmf-dist/fonts/type1/pu
 blic/cs/csr10.pfb></usr/share/texmf-dist/fonts/type1/public/cs/csti10.pfb>
-Output written on projekt.pdf (3 pages, 48573 bytes).
+Output written on projekt.pdf (3 pages, 48340 bytes).
 PDF statistics:
  40 PDF objects out of 1000 (max. 8388607)
  28 compressed objects within 1 object stream
