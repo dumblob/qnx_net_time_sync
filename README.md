@@ -23,7 +23,7 @@ unpack the recently downloaded archive with `PTPd`
 ~~~~~~
 apply the patch
 ~~~~~~
-  patch -p 1 < ../qnx_net_time_sync/src/ptp/patch.ptpd-2.2.2
+  patch -p 1 < ../qnx_net_time_sync/results/ptp/patch.ptpd-2.2.2
 ~~~~~~
 compile `PTPd`
 ~~~~~~
