@@ -1,0 +1,15 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-04-26-134038
+
+ClockPeriod(): 39390ns
+
+measure period: 130s
+network load: 100% through 100MBit shared line between 2 switches (master <-> slave)
+system load: none
+time synchronization: PTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!

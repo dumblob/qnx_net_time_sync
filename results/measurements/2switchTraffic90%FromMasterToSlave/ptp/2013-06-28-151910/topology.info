@@ -1,0 +1,17 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-06-28-151910
+
+ClockPeriod(): 39390ns
+
+measure period: 130s
+network load: 90% through 100MBit shared line (master -> slave)
+system load: none
+time synchronization: PTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+note: ran with disabled logging (neither to syslog nor to stdout/stderr)
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!

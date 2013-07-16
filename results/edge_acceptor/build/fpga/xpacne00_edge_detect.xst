@@ -1,0 +1,2 @@
+set -tmpdir build/fpga -xsthdpdir build/fpga
+run -ifn build/fpga/xpacne00_edge_detect.prj -ifmt mixed -opt_mode SPEED -opt_level 1 -ofn build/fpga/xpacne00_edge_detect.ngc -ofmt NGC -lso build/fpga/xpacne00_edge_detect.lso -p xc3s50-4-pq208 -top fpga -rtlview yes

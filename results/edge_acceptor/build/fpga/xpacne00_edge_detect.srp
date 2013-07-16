@@ -1,0 +1,342 @@
+Release 13.1 - xst O.40d (lin64)
+Copyright (c) 1995-2011 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to build/fpga
+Parameter xsthdpdir set to build/fpga
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.04 secs
+ 
+--> 
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+	9.1) Device utilization summary
+	9.2) Partition Resource Summary
+	9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "build/fpga/xpacne00_edge_detect.prj"
+Input Format                       : mixed
+
+---- Target Parameters
+Output File Name                   : "build/fpga/xpacne00_edge_detect.ngc"
+Output Format                      : NGC
+Target Device                      : xc3s50-4-pq208
+
+---- Source Options
+Top Module Name                    : fpga
+
+---- General Options
+Optimization Goal                  : SPEED
+Optimization Effort                : 1
+Library Search Order               : build/fpga/xpacne00_edge_detect.lso
+RTL Output                         : yes
+
+=========================================================================
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/tmp/xpacne00/build.17040/fpga/units/clkgen/clkgen_config.vhd" in Library work.
+Package <clkgen_cfg> compiled.
+Package body <clkgen_cfg> compiled.
+Compiling vhdl file "/tmp/xpacne00/build.17040/fpga/chips/fpga_xc3s50.vhd" in Library work.
+Entity <fpga> compiled.
+Compiling vhdl file "/tmp/xpacne00/build.17040/apps/dumblob/edge_acceptor/fpga/top.vhd" in Library work.
+Entity <fpga> (Architecture <main>) compiled.
+Compiling vhdl file "/tmp/xpacne00/build.17040/fpga/units/clkgen/clkgen.vhd" in Library work.
+Entity <clkgen> compiled.
+Entity <clkgen> (Architecture <BEHAVIORAL>) compiled.
+Compiling vhdl file "/tmp/xpacne00/build.17040/apps/dumblob/edge_acceptor/build/fpga/xpacne00_edge_detect_config.vhd" in Library work.
+Package <fpga_cfg> compiled.
+Package body <fpga_cfg> compiled.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <fpga> in library <work> (architecture <main>).
+
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing Entity <fpga> in library <work> (Architecture <main>).
+Entity <fpga> analyzed. Unit <fpga> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <fpga>.
+    Related source file is "/tmp/xpacne00/build.17040/apps/dumblob/edge_acceptor/fpga/top.vhd".
+WARNING:Xst:2565 - Inout <RD<3>> is never assigned.
+WARNING:Xst:2565 - Inout <X<30>> is never assigned.
+WARNING:Xst:2565 - Inout <X<25>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<4>> is never assigned.
+WARNING:Xst:2565 - Inout <X<31>> is never assigned.
+WARNING:Xst:2565 - Inout <X<26>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<5>> is never assigned.
+WARNING:Xst:2565 - Inout <X<32>> is never assigned.
+WARNING:Xst:2565 - Inout <X<27>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<6>> is never assigned.
+WARNING:Xst:2565 - Inout <X<33>> is never assigned.
+WARNING:Xst:2565 - Inout <X<28>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<7>> is never assigned.
+WARNING:Xst:2565 - Inout <X<34>> is never assigned.
+WARNING:Xst:2565 - Inout <X<29>> is never assigned.
+WARNING:Xst:647 - Input <ACLK> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <X<35>> is never assigned.
+WARNING:Xst:2565 - Inout <X<40>> is never assigned.
+WARNING:Xst:2565 - Inout <X<41>> is never assigned.
+WARNING:Xst:2565 - Inout <X<36>> is never assigned.
+WARNING:Xst:2565 - Inout <X<37>> is never assigned.
+WARNING:Xst:2565 - Inout <X<38>> is never assigned.
+WARNING:Xst:2565 - Inout <X<39>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<10>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<11>> is never assigned.
+WARNING:Xst:2565 - Inout <X<0>> is never assigned.
+WARNING:Xst:2565 - Inout <X<1>> is never assigned.
+WARNING:Xst:647 - Input <FCLK> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <X<2>> is never assigned.
+WARNING:Xst:2565 - Inout <X<3>> is never assigned.
+WARNING:Xst:2565 - Inout <X<4>> is never assigned.
+WARNING:Xst:647 - Input <KOUT> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <X<5>> is never assigned.
+WARNING:Xst:2565 - Inout <X<6>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<0>> is never assigned.
+WARNING:Xst:2565 - Inout <X<7>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<1>> is never assigned.
+WARNING:Xst:2565 - Inout <X<8>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<2>> is never assigned.
+WARNING:Xst:2565 - Inout <X<9>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<3>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<4>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<5>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<6>> is never assigned.
+WARNING:Xst:2565 - Inout <LD<7>> is never assigned.
+WARNING:Xst:647 - Input <SMCLK> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <P3M<0>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<1>> is never assigned.
+WARNING:Xst:647 - Input <SPI_CS> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:647 - Input <SPI_DO> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <AFBUS<4>> is never assigned.
+WARNING:Xst:2565 - Inout <X<10>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<2>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<5>> is never assigned.
+WARNING:Xst:2565 - Inout <X<11>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<3>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<6>> is never assigned.
+WARNING:Xst:2565 - Inout <X<12>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<4>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<7>> is never assigned.
+WARNING:Xst:647 - Input <SPI_FPGA_CS> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <X<13>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<5>> is never assigned.
+WARNING:Xst:2565 - Inout <AFBUS<8>> is never assigned.
+WARNING:Xst:2565 - Inout <X<14>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<6>> is never assigned.
+WARNING:Xst:647 - Input <SPI_CLK> is never used. This port will be preserved and left unconnected if it belongs to a top-level block or it belongs to a sub-block and the hierarchy of this sub-block is preserved.
+WARNING:Xst:2565 - Inout <AFBUS<9>> is never assigned.
+WARNING:Xst:2565 - Inout <X<20>> is never assigned.
+WARNING:Xst:2565 - Inout <X<15>> is never assigned.
+WARNING:Xst:2565 - Inout <P3M<7>> is never assigned.
+WARNING:Xst:2565 - Inout <X<16>> is never assigned.
+WARNING:Xst:2565 - Inout <X<21>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<0>> is never assigned.
+WARNING:Xst:2565 - Inout <X<22>> is never assigned.
+WARNING:Xst:2565 - Inout <X<17>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<1>> is never assigned.
+WARNING:Xst:2565 - Inout <X<23>> is never assigned.
+WARNING:Xst:2565 - Inout <X<18>> is never assigned.
+WARNING:Xst:2565 - Inout <RD<2>> is never assigned.
+WARNING:Xst:2565 - Inout <X<24>> is never assigned.
+WARNING:Xst:2565 - Inout <X<19>> is never assigned.
+    Found 1-bit tristate buffer for signal <LEDF>.
+    Found 1-bit tristate buffer for signal <SPI_DI>.
+    Found 4-bit tristate buffer for signal <KIN>.
+    Found 1-bit tristate buffer for signal <LE>.
+    Found 1-bit tristate buffer for signal <LRS>.
+    Found 1-bit tristate buffer for signal <LRW>.
+    Found 15-bit tristate buffer for signal <RA>.
+    Found 1-bit tristate buffer for signal <RDQM>.
+    Found 1-bit tristate buffer for signal <RCS>.
+    Found 1-bit tristate buffer for signal <RRAS>.
+    Found 1-bit tristate buffer for signal <RCAS>.
+    Found 1-bit tristate buffer for signal <RWE>.
+    Found 1-bit tristate buffer for signal <RCLK>.
+    Found 1-bit tristate buffer for signal <RCKE>.
+    Summary:
+	inferred  31 Tristate(s).
+Unit <fpga> synthesized.
+
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Tristates                                            : 31
+ 1-bit tristate buffer                                 : 31
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Found no macro
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <fpga> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Found no macro
+=========================================================================
+
+=========================================================================
+*                           Partition Report                            *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : build/fpga/xpacne00_edge_detect.ngr
+Top Level Output File Name         : build/fpga/xpacne00_edge_detect.ngc
+Output Format                      : NGC
+Optimization Goal                  : SPEED
+Keep Hierarchy                     : no
+
+Design Statistics
+# IOs                              : 124
+
+Cell Usage :
+# BELS                             : 2
+#      GND                         : 1
+#      VCC                         : 1
+# IO Buffers                       : 39
+#      IBUF                        : 4
+#      OBUF                        : 4
+#      OBUFT                       : 31
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 3s50pq208-4 
+
+ Number of Slices:                        0  out of    768     0%  
+ Number of IOs:                         124
+ Number of bonded IOBs:                  39  out of    124    31%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+No clock signals found in this design
+
+Asynchronous Control Signals Information:
+----------------------------------------
+No asynchronous control signals found in this design
+
+Timing Summary:
+---------------
+Speed Grade: -4
+
+   Minimum period: No path found
+   Minimum input arrival time before clock: No path found
+   Maximum output required time after clock: No path found
+   Maximum combinational path delay: 7.266ns
+
+Timing Detail:
+--------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default path analysis
+  Total number of paths / destination ports: 4 / 4
+-------------------------------------------------------------------------
+Delay:               7.266ns (Levels of Logic = 2)
+  Source:            AFBUS<1> (PAD)
+  Destination:       X<42> (PAD)
+
+  Data Path: AFBUS<1> to X<42>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     IBUF:I->O             1   0.821   0.801  AFBUS_1_IBUF (X_42_OBUF)
+     OBUF:I->O                 5.644          X_42_OBUF (X<42>)
+    ----------------------------------------
+    Total                      7.266ns (6.465ns logic, 0.801ns route)
+                                       (89.0% logic, 11.0% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 4.00 secs
+Total CPU time to Xst completion: 3.85 secs
+ 
+--> 
+
+
+Total memory usage is 346076 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :   82 (   0 filtered)
+Number of infos    :    0 (   0 filtered)
+

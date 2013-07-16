@@ -1,0 +1,21 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-07-03-140324
+
+ClockPeriod(): 39390ns
+
+measure period: 130s
+network load: 90% through 100MBit shared line (slave -> master)
+system load: none
+time synchronization: NTP
+PTP/NTP daemon priority: -25
+edge_generator priority: -28
+FitKit calibration: none
+
+notes
+  ran with disabled logging (neither to syslog nor to stdout/stderr)
+  ntpq -p announced 6.729[slave] jitter before starting the load
+                    6.015[slave] jitter under load after 20 hours of running load
+
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!

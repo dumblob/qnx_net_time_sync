@@ -1,0 +1,5 @@
+vhdl work "build/fpga/xpacne00_edge_detect_config.vhd"
+vhdl work "../../../fpga/units/clkgen/clkgen_config.vhd"
+vhdl work "../../../fpga/units/clkgen/clkgen.vhd"
+vhdl work "../../../fpga/chips/fpga_xc3s50.vhd"
+vhdl work "fpga/top.vhd"

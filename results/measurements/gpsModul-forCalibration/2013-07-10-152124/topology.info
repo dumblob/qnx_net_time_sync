@@ -1,0 +1,9 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-07-10-152124
+
+measure period: 1s
+FitKit calibration: ???
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+GPS -> FITkit
