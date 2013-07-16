@@ -4,8 +4,7 @@ from math import fabs
 import sys
 import numpy
 
-# length of one second on FITkit in tenths of 'ps' units (a mean from means
-#   from the GPS measurements)
+# length of one second on FITkit (a mean from means from the GPS measurements)
 FITKIT_SECOND = 100008701811 + \
                 100008696049 + \
                 100008691020 + \
@@ -26,8 +25,9 @@ if action not in ALLOWED_ACTIONS:
   print('Unknown action: ' + action, file = sys.stderr)
   exit(1)
 
+# normalize to the GPS time (from the FITkit time)
 # 1 ~ seconds; 1000 ~ ms; 1000000 ~ us; ...
-unit_degree = float(1000 * FITKIT_MULT) / float(FITKIT_SECOND)  # normalize to the GPS time (from the FITkit time)
+unit_degree = float(1000 * FITKIT_MULT) / float(FITKIT_SECOND)
 unit = 'ms'
 
 def print_master_slave(i, M, S, **for_print):
@@ -136,6 +136,7 @@ with open(res_dir + '/stats', mode = 'a') as f:
   for k, l in all_results.items():
     #if len(l) == 0:
     #  continue
+    stddev = numpy.std(l)/float(freq)
     mean = numpy.mean(l)/float(freq)
     median = numpy.median(l)/float(freq)
     max_seconds = float(max(l))/float(freq)
@@ -150,6 +151,7 @@ with open(res_dir + '/stats', mode = 'a') as f:
         '    FitKit 32bit counter overflow occured: ' + overflow + '\n' +
         '    MAX: ' + str(max_seconds * unit_degree) + unit + '\n' +
         '    MIN: ' + str(min_seconds * unit_degree) + unit + '\n' +
+        '    STDDEV: ' + str(stddev * unit_degree) + unit + '\n' +
         '    MEAN: ' + str(mean * unit_degree) + unit + '\n' +
         '    MEDIAN: ' + str(median * unit_degree) + unit,
         file = f)
