@@ -1,0 +1,62 @@
+Vážený pane Píšo,
+
+Marek Peca mi doporučil Vás kontaktovat v následujícím problému ohledně operačních systémů a MCU. Chtěl bych Vás tedy požádat o Váš názor na níže popisované problémy.
+
+Pro účely měření zpoždění a výkonu síťových synchronizačních protokolů času (PTP a NTP v podobě démonů PTPd a NTPd) jsem postavil měřicí sestavu, kde na obou stanicích synchronizovaných pomocí daného synchronizačního protokolu (master-slave) mi běžela aplikace, která vystavovala každou sekundu (nebo každých 130s) hranu na vodiči DTR přes RS232 (délka impulzu je velice krátká, pro má měření takřka irelevantní, a odpovídá zpoždění způsobeném dvojitou propagací nastavení do registru(ů) v řadiči RS232, tedy set_DTR a poté unset_DTR) a tuto hranu jsem detekoval na jednočipovém MCU na zařízení FITkit (http://merlin.fit.vutbr.cz/FITkit/).
+
+Na použitém 16b MCU na FITkitu jsem potřeboval 64b čítač, ale emulace 64b by zbytečně zdržovala. Pomocí přerušení při přetečení jsem si tedy vytvořil jednoduchý 32b čítač a až při vyhodnocování naměřených hodnot dopočítávám při detekování přetečení skutečné hodnoty. Pochopitelně jsem se tím omezil na jistý časový úsek, který nesmím v zaznamenávání samplů překročit, ale tato doba se ukázala jako dostatečná.
+
+Na obou stanicích běžel real-time operační systém QNX, který se vyznačuje především tzv. tickem, což je nejmenší časová jednotka, se kterou jádro pracuje a udává tedy celkovou časovou přesnost systému. Měřicí aplikace je jednoduchá smyčka, kde čekám na další tick (tick je zajišťen přerušením) a v okamžiku příchodu tohoto přerušení kontroluji, zdali jsem již překročil čas, na který mám naplánované další vystavení hrany. Pokud došlo k překročení, spočítám čas („naplánuji na něj“), kdy se má vystavit další hrana a vystavím hranu (set_DTR), okamžitě ji shodím (unset_DTR) a znovu iteruji.
+
+Takto jsem provedl mnoho měření s různými parametry a záteží sítě a stanic. Avšak převážně v „dlouhodobých“ měřeních (hrana každých 130s, 500 samplů, tedy cca 18 hodin celková délka měření) se objevily v grafech ze stanice master (ta, která poskytovala čas a v grafech měla vykazovat „konstantní“ délku periody mezi vystavováním hran) dva níže popsané problémy/anomálie. V grafech ze stanice slave (ta, která byla synchronizovaná daným protokolem vůči master stanici) se objevil pouze první níže popsaný problém, ale není vyloučeno, ba spíše předpokládám, že je přítomen i druhý problém - musím ještě naměřit. V krátkodobých měřeních (hrana každou 1s, 500 samplů, tedy cca 8 min. celková délka) byly oba níže uvedené problémy též zachyceny.
+
+Prvním z problémů jsou náhodně umístěné výchylky („dips“), které výrazně převyšují jitter. Takováto výchylka se v 18hod měřeních objevovala většinou pouze jednou (naměřil jsem však i případ, kdy se objevila 3x a případ, kdy se neobjevila vůbec). Pro představu uvedu, že jitter (směrodatná odchylka) dosahoval v měřeních s nezatíženou stanicí master hodnoty cca 0.02 ms, ale tento dip měl vždy téměř přesně velikost -9 ms (tedy systémové hodiny stanice někde v těch 130 s mezi samply ohromně zrychlily - "už" tam ta stanice byla, i když v tom čase ještě být neměla - a hned v dalších 130 s se vrátily do normálu a pokračovaly s původním jitterem 0.02ms).
+
+Druhým problémem je vždy téměř přesně stejně veliká odchylka 0.04 ms jednoho jediného samplu v pravidelných intervalech. Velikost tohoto intervalu je pro 18hod měření cca 30 (+-1 sample) samplů (tedy 30*130s = 60 min) a pro 8min měření 6 samplů (tedy 1*6 = 6 sekund). Tyto malé, ale poměrně časté odchylky způsobují podle mého názoru též vysoký jitter (okolo 0.02ms), který by bez nich byl jistě ostře menší než 0.01ms. Lze je pozorovat jako nepatrné trojúhelníčky na všech grafech s měřeními stanice master. Stanice master tedy chvilku (v době mezi samply - tedy za 130s) mírně zpomalovala a pak zase chvilku (zase v době 130s) mírně zrychlovala až k „původní“ hodnotě jitteru. První takováto malá výchylka se v každém grafu objevuje v různém čase (nikdy však tento offset nepřekročí interval těch 30 +-1 samplů, resp. 6 samplů), a tedy nepředpokládám jakoukoliv souvislost se zákmity/změnami způsobenými samotným spuštěním měření.
+
+Pro účely zjištění přesnosti měřicí soustavy bylo provedeno několik měření bez výše popsaných stanic, ale přímo s PPS signálem z GPS modulu. Bohužel všechna relevatní měření byla provedena na portu/pinu, kam byl vždy připojený slave. V těchto měřeních se žádná odchylka neobjevila. Výsledná stanovená přesnost měřicí soustavy FITkit má směrodatnou odchylku v průměru ze čtyřech 8min měření 127.84 ns.
+
+Výše popsané problémy jsem se snažil vysvětlit stanovením hypotéz a následně potvrdit či vyvrátit empirickými měřeními s různými nastaveními podmínek. Bohužel jsem se nedobral k žádnému jednoznačnému, ba ani uspokojivému výsledku.
+
+
+a) PRAVIDELNÉ MALÉ VÝCHYLKY „NAHORU“ - PEAKS
+hypotéza 1: jeden tick mikrojádra QNX byl nastaven u všech relevantních měření na 39390 ns, tedy cca 0.04 ms, což by odpovídalo právě naměřeným peakům
+výsledek: nerozhodnuto (ale připadá mi více než pravděpodobné, že to je pravda - prostě jednou za cca 150000 ticků mikrojádra se pravidelně strefím do okamžiku, kdy je podmínka rozhodující o (ne)vystavení hrany vyhodnocena úplně těsně před daným časem a tím pádem se musí počkat až na následující tick, tedy zdržení cca 0.04 ms; u měření GPS modulu se žádné takovéto odchylky neobjevily, což by pouze potvrzovalo domněnku, že je tato hypotéza pravdivá)
+hypotéza 2: synchronizační daemon na stanici master hýbe pravidelně s lokálními systémovými hodinami pomocí settimeofday()
+výsledek: není pravda (provedl jsem několik měření se zapnutým a vypnutým daemonem PTPd za dodržení stejných ostatních podmínek a všechna měření vykazují tyto pravidelné peaky)
+hypotéza 3: špatně zpracované přetečení čítače MCU na FITkitu v postprocessing skriptech
+výsledek: není pravda (perioda přetečení je hodně odlišná od periody peaků a místa přetečení vykazují stejný jitter jako místa bez přetečení)
+
+
+b) NÁHODNÉ OBROVSKÉ VÝCHYLKY „DOLŮ“ - DIPS
+hypotéza 1: ovladač RS232 v QNX je nespolehlivý
+výsledek: nerozhodnuto
+hypotéza 2: použitý řadič RS232 (instance/konkrétní_kus) v chipsetu je nespolehlivý
+výsledek: není pravda (tato výchylka byla zachycena i na stanici slave, která má odlišný HW: Intel C2D versus Intel Atom)
+hypotéza 3: použitý řadič RS232 (návrh) je nespolehlivý
+výsledek: nerozhodnuto (ale nepřipadá mi pravděpodobné, že by oba chipsety, jak pro C2D, tak pro Atom, měly totožný problém s RS232 v návrhu)
+hypotéza 4: hierarchie sběrnic způsobí nedeterministické zpoždění
+výsledek: nerozhodnuto (ale nepřipadá mi pravděpodobné, že by pokaždé byla výchylka „přesně“ -9ms)
+hypotéza 5: implementace síťového stacku v jádře QNX způsobuje málo časté, náhodné, zato však veliké zpoždění některých paketů
+výsledek: nerozhodnuto (nepodařilo se mi naměřit žádné měření bez běžícího PTPd nebo NTPd takové, kde by se tento obrovský dip objevil; tedy tato možnost není vyloučena, ale připadá mi nepravděpodobné, že by pokaždé toto zpoždění mělo za následek zpoždění paketu „přesně“ o 9 ms, což by v důsledku synchronizační protokol zachytil jako příliš velkou změnu a ignoroval by tuto informaci jako nedůvěryhodnou - zvlášť když se tento problém objevuje u obou naprosto rozdílných synchronizačních daemonů PTPd i NTPd a na obou stanicích, jak na master, tak na slave)
+hypotéza 6: daemon PTPd a NTPd udělají chybu a „uvěří“ chybnému paketu (např. vysoce zpožděnému) a neúměrně prudce změní čas dopředu v reakci na zpoždění toho paketu
+výsledek: není pravda (dip byl naměřen u PTPd i NTPd, přičemž ze specifikace i NTP a zdrojového kódu PTPd plyne, že při chybě neposunují čas o fixní délku takovéhle velikosti)
+hypotéza 7: chyby způsobuje FITkit (např. použité MCU)
+výsledek: nerozhodnuto (ale je to velice málo pravděpodobné, protože by se jistě „něco“ objevilo ve vysoce přesných 8min měřeních PPS signálu z GPS modulu, kde tato vykazovala naprosto stabilní chování FITkitu, resp. pouze velice nízkou frekvenci driftu krystalu přítomného na FITkitu)
+hypotéza 8: měřicí aplikace (generátor hran) je plánovačem QNX jednou za čas pozdržena i přesto, že má vysokou (-28) nebo přímo nejvyšší (-245) user-space prioritu (na QNX se priorita nastavuje pouze pomocí nice a toto nastavení má naprosto přímý vliv - aplikace s vyšší hodnotou nice bude vždy upřednostněna)
+výsledek: nerozhodnuto (pokud by tomu však tak bylo, tak -9ms je doslova absolutní zabiják např. v automotive, kde se QNX nasazuje pro autopiloty apod.)
+hypotéza 9: vyprázdnění bufferu při výpisu logovacích informací na stdout by mohlo způsobit zpoždění
+výsledek: nerozhodnuto (je pravda, že žádné měření s vypnutým logováním u synchronizačních démonů neobsahovalo takovýto dip; ale nepřipadá mi pravděpodobné, že by vyprázdnění bufferu trvalo vždy stejně dlouhou dobu jak u NTPd, tak i PTPd a už vůbec ne takhle dlouhou dobu)
+
+
+Záměrně jsem neuvedl odkazy na konkrétní grafy, abych Vám nemotal hlavu s jejich interpretací a zejména jejich množstvím. Všechny jsou však dostupné na https://github.com/dumblob/qnx_net_time_sync/tree/master/results/measurements (adresáře popisují hrubé kategorie měření a vyjma speciálních měření „gpsModul“ a „misc“, je v každém adresáři rozděleno měření na „ntp“, „ptp“ nebo „none“ podle toho, zdali byla použita nějaká synchronizace a nebo nikoliv).
+
+Každé měření je v adresáři pojmenovaném podle času, kdy bylo měření započato, případně kdy bylo ukončeno (časy jsou však pouze orientační a nemají žádný jiný význam). Každý adresář s měřením obsahuje soubor „topology.info“ obsahující strukturovaný popis daného měření, dále soubor „results.raw“ obsahující výstup z měřícího zařízení FITkit. Vše ostatní jsou vygenerované výstupy z postprocessing skriptů (pro studium výše popisovaných problémů je nejdůležitější „results.sampling_period.ps“, popř. „results.sampling_period.filtered.ps“ a „stats“).
+
+Jsem si vědom, že nemáte mnoho času, ale opravdu si s tím nevím rady a chtěl bych Vás požádat o erudovaný názor. Jsem si jist, že mi mnoho věcí uniklo a proto prosím o shovívavost, ale zejména o prozrazení těchto tajuplných zákoutí real-time systémů a dnešního hardware.
+
+S přáním pěkného dne
+
+-- Jan Pacner
+
+vim: set wrap:

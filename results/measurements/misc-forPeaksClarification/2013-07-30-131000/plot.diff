@@ -1,0 +1,21 @@
+set terminal postscript eps enhanced color size 5.3,2.4
+#set terminal png size 900,360
+set output "results.diff.ps"
+
+#set size 1,2  # pomer asi 1:1
+set grid
+#set style data lines
+#set style data lines linecolor rgb "red"
+set style line 1 linecolor rgb "#FF0000"
+
+set key
+set title "measurement 2013-07-30-131000"
+set xlabel "master-slave sample pairs";  set ylabel "time difference [ms]"
+#set xlabel "sample pairs";  set ylabel "time difference [1/7372800 s]"
+set format y "%.2f";
+set format y "%.2f";
+
+#set nokey
+#set title "some title..."
+#set xlabel "x axis";  set ylabel "y axis"
+#plot "in00.dat" using 2:3

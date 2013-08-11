@@ -1,0 +1,38 @@
+both
+  slave
+    FitKit 32bit counter overflow occured: Yes
+    MAX: 65048351.40145205ms
+    MIN: 175689.8664762699ms
+    STDDEV: 18764616.8434ms
+    MEAN: 32612019.5308ms
+    MEDIAN: 32612019.4796ms
+  master
+    FitKit 32bit counter overflow occured: Yes
+    MAX: 0.0ms
+    MIN: 0.0ms
+    STDDEV: 0.0ms
+    MEAN: 0.0ms
+    MEDIAN: 0.0ms
+diff
+  diff
+    FitKit 32bit counter overflow occured: Yes
+    MAX: 65048351.40145205ms
+    MIN: 175689.8664762699ms
+    STDDEV: 18764616.8434ms
+    MEAN: 32612019.5308ms
+    MEDIAN: 32612019.4796ms
+sampling_period
+  slave
+    FitKit 32bit counter overflow occured: Yes
+    MAX: 130005.39941973265ms
+    MIN: 130005.28861664886ms
+    STDDEV: 0.0214623216172ms
+    MEAN: 130005.333737ms
+    MEDIAN: 130005.338661ms
+  master
+    FitKit 32bit counter overflow occured: Yes
+    MAX: 0.0ms
+    MIN: 0.0ms
+    STDDEV: 0.0ms
+    MEAN: 0.0ms
+    MEDIAN: 0.0ms

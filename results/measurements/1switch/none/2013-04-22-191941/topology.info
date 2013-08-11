@@ -9,6 +9,8 @@ system load: none
 time synchronization: none
 FitKit calibration: none
 
+FAIL during measurement => unusable results
+
 !!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
   QNX <-> switch <-> QNX
 

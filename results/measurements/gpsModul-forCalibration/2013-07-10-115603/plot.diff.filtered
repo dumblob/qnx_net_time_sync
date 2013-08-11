@@ -12,8 +12,8 @@ set key
 set title "measurement 2013-07-10-115603"
 set xlabel "master-slave sample pairs";  set ylabel "time difference [ms]"
 #set xlabel "sample pairs";  set ylabel "time difference [1/7372800 s]"
-plot "results.diff.filtered" using 1:2 title "difference [ms]" with lines
-#plot "results.diff" using 1:2 title "difference [1/7372800 s]" with dots
+set format y "%.2f";
+set format y "%.2f";
 
 #set nokey
 #set title "some title..."

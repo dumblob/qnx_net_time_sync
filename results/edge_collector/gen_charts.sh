@@ -1,7 +1,7 @@
 #!/bin/sh
 
-[ $# -eq 1 ] || {
-  echo "USAGE: $0 <dir-with-results.raw>"
+[ $# -eq 1 ] || [ $# -eq 2 -a $2 = '--one-line' ] || {
+  echo "USAGE: $0 <dir-with-results.raw> [--one-line]"
   exit
 }
 
@@ -10,6 +10,7 @@ bdir="$(dirname "$(readlink -f "$0")")"
 res_dir="$1"
 res_file="$res_dir"/results.raw
 topology_file="$res_dir"/topology.info
+one_line="$2"
 
 [ -d "$res_dir" ] || {
   echo "Directory does not exist: $res_dir" >&2
@@ -33,6 +34,13 @@ substitute_markers() {
   sed -r -i "s/[{]{3}PER[}]{3}/$period/" "$1"
 }
 
+remove_first_line() {
+  sed -i -r -e '/using 1:2 title/{ aset format y "%.2f";
+    d
+  }' \
+            -e 's/[^#].*using 1:3 title.*/plot \0/' "$1"
+}
+
 rm -f "$res_dir"/stats || exit 1
 
 MYPWD="$PWD"
@@ -43,19 +51,17 @@ for kind in 'both' 'diff' 'sampling_period'; do
   "$bdir"/gen_stats.py $kind "$res_dir" "$freq" > \
     "$res_dir/results.$kind" || {
     echo "ERR gen_stats.py \"$kind\"" >&2
-    ret=1
-    continue
+    ret=2
   }
 
   cp -f "$bdir/plot.${kind}.template" \
     "$res_dir/plot.${kind}" || {
-    echo "ERR cp \"$kind\"" >&2
     ret=2
     continue
   }
+
   cp -f "$bdir/plot.${kind}.filtered.template" \
     "$res_dir/plot.${kind}.filtered" || {
-    echo "ERR cp filtered \"$kind\"" >&2
     ret=3
     continue
   }
@@ -63,11 +69,17 @@ for kind in 'both' 'diff' 'sampling_period'; do
   cd "$res_dir"
   substitute_markers "plot.${kind}"
   substitute_markers "plot.${kind}.filtered"
+
+  [ -n "$one_line" ] && remove_first_line "plot.${kind}"
+
   gnuplot "plot.${kind}" || {
     echo "ERR gnuplot \"$kind\"" >&2
     ret=4
     continue
   }
+
+  [ -n "$one_line" ] && remove_first_line "plot.${kind}.filtered"
+
   gnuplot "plot.${kind}.filtered" || {
     echo "ERR gnuplot filtered \"$kind\"" >&2
     ret=5

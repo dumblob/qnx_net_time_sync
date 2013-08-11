@@ -8,6 +8,8 @@ network load: none
 system load: none
 # neither from internet nor in between of QNX stations
 time synchronization: none
+PTP/NTP daemon priority:
+edge_generator priority: 10
 FitKit calibration: none
 
 QNX <-> switch <-> QNX

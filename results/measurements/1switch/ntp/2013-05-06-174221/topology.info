@@ -13,6 +13,7 @@ edge_generator priority: -28
 FitKit calibration: none
 
 after cca 15 minutes of running NTPd
+FAILED during measuring => unusable results :(
 
 !!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
       QNX + ptp master <-> switch <-> QNX + ptp slave

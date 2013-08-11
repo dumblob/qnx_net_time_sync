@@ -1,0 +1,18 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-07-31-104600
+
+ClockPeriod(): 39390ns
+
+measure period: 130s
+network load: none
+system load: none
+time synchronization: PTP (only master, because there is no ethernet connectivity on the QNX host)
+PTP/NTP daemon priority: -25
+edge_generator priority: -245
+FitKit calibration: none
+
+NOTE: master (the blue QNX box) RS232 was connected to the slave pin on FITkit
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+QNX host <-> FITkit

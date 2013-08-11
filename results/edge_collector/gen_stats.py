@@ -9,6 +9,7 @@ FITKIT_SECOND = 100008701811 + \
                 100008696049 + \
                 100008691020 + \
                 100008687052
+
 # we must divide by this if we want to use the FITKIT_SECOND
 # useful to gain higher precision (int in Python has indefinite precision)
 FITKIT_MULT   = 100000000000 * 4
@@ -33,6 +34,8 @@ unit = 'ms'
 def print_master_slave(i, M, S, **for_print):
   print(str(i) + ' ' + str((float(M) * unit_degree)/freq) + ' ' +
                        str((float(S) * unit_degree)/freq), **for_print)
+  #print(str(i) + ' ' + str(M) + ' ' +
+  #                     str(S), **for_print)
 
 def print_diff(i, diff, **for_print):
   print(str(i) + ' ' + str((float(diff) * unit_degree)/freq), **for_print)

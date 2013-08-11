@@ -1,0 +1,19 @@
+# Topology specification (how many and which components, which
+#   settings, which wiring...)
+# measure: 2013-07-28-122300
+
+ClockPeriod(): 39390ns
+
+measure period: 1s
+network load: none
+system load: none
+time synchronization: none
+PTP/NTP daemon priority:
+edge_generator priority: 10
+FitKit calibration: none
+
+NOTE: master (the blue QNX box) RS232 was connected to the slave pin on FITkit
+FAIL occured during measurement => invalid results
+
+!!!!!!!!!!!  WIRE TOPOLOGY  !!!!!!!!!!!
+master <-> FITkit
