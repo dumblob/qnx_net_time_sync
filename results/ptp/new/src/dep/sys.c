@@ -621,7 +621,12 @@ getTime(TimeInternal * time)
 	struct timespec tp;
 
 	if(! area) {
-		// register interrupt handler and reserve memory
+		/* set affinity to the CPU No. 1 */
+		if(ThreadCtl(_NTO_TCTL_RUNMASK, (1 << 0)) == -1) {
+			PERROR("ThreadCtrl _NTO_TCTL_RUNMASK");
+			return;
+		}
+		/* reserve memory for interrupt handler */
 		area = (no_page_area*)malloc(sizeof(no_page_area));
 		area->int_count = 0;
 		area->tsc_step = 0;
@@ -629,8 +634,9 @@ getTime(TimeInternal * time)
 		area->last_tsc = ClockCycles();
 		clock_gettime(CLOCK_REALTIME, &tp);
 		area->last_clock = timespec2nsec(&tp);
+		/* request I/O privileges (e.g. let us attach IRQ handlers) */
 		if(ThreadCtl(_NTO_TCTL_IO, 0) == -1) {
-			PERROR("ThreadCtrl");
+			PERROR("ThreadCtrl _NTO_TCTL_IO");
 			return;
 		}
 		ret = InterruptAttach(

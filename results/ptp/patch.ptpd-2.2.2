@@ -1,24 +1,6 @@
-diff -urN old/src/Makefile new/src/Makefile
---- old/src/Makefile	2013-01-06 08:11:49.000000000 +0000
-+++ new/src/Makefile	2013-03-06 09:54:39.000000000 +0000
-@@ -43,7 +43,13 @@
- 
- CFLAGS += -DPTP_EXPERIMENTAL
- 
--LDFLAGS = -lm -lrt
-+ARCH=$(shell uname)
-+ifeq ($(ARCH),QNX)
-+	LDFLAGS = -lm -lsocket
-+else
-+	LDFLAGS = -lm -lrt
-+endif
-+
- STATICLIBFLAGS = rcs
- SHAREDLIBFLAGS = -shared -Wl,-soname
- 
 diff -urN old/src/bmc.c new/src/bmc.c
---- old/src/bmc.c	2013-01-06 08:11:49.000000000 +0000
-+++ new/src/bmc.c	2013-03-06 09:53:50.000000000 +0000
+--- old/src/bmc.c	2012-06-20 22:02:52.000000000 +0200
++++ new/src/bmc.c	2013-03-06 10:53:50.000000000 +0100
 @@ -258,7 +258,7 @@
  			ptpClock->leapSecondPending = FALSE;
  			ptpClock->leapSecondInProgress = FALSE;
@@ -38,8 +20,8 @@ diff -urN old/src/bmc.c new/src/bmc.c
  				"one second at midnight\n",
  				ptpClock->leap61 ? "add" : "delete");
 diff -urN old/src/dep/constants_dep.h new/src/dep/constants_dep.h
---- old/src/dep/constants_dep.h	2013-01-06 08:11:48.000000000 +0000
-+++ new/src/dep/constants_dep.h	2013-01-06 09:38:25.000000000 +0000
+--- old/src/dep/constants_dep.h	2012-06-20 22:02:51.000000000 +0200
++++ new/src/dep/constants_dep.h	2013-01-06 10:38:25.000000000 +0100
 @@ -16,7 +16,7 @@
  /* platform dependent */
  
@@ -80,8 +62,8 @@ diff -urN old/src/dep/constants_dep.h new/src/dep/constants_dep.h
  # include <sys/types.h>
  # include <sys/socket.h>
 diff -urN old/src/dep/net.c new/src/dep/net.c
---- old/src/dep/net.c	2013-01-06 08:11:48.000000000 +0000
-+++ new/src/dep/net.c	2013-03-06 09:53:35.000000000 +0000
+--- old/src/dep/net.c	2012-06-20 22:02:51.000000000 +0200
++++ new/src/dep/net.c	2013-03-06 10:53:35.000000000 +0100
 @@ -622,6 +622,13 @@
  		return FALSE;
  	}
@@ -97,8 +79,8 @@ diff -urN old/src/dep/net.c new/src/dep/net.c
  }
  
 diff -urN old/src/dep/sys.c new/src/dep/sys.c
---- old/src/dep/sys.c	2013-01-06 08:11:48.000000000 +0000
-+++ new/src/dep/sys.c	2013-03-06 09:52:46.000000000 +0000
+--- old/src/dep/sys.c	2012-06-20 22:02:51.000000000 +0200
++++ new/src/dep/sys.c	2013-10-15 14:27:48.000000000 +0200
 @@ -231,7 +231,7 @@
  	static struct ether_addr prev_addr;
  	static char buf[BUF_SIZE];
@@ -162,7 +144,7 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
  void 
  getTime(TimeInternal * time)
  {
-@@ -572,6 +610,59 @@
+@@ -572,6 +610,65 @@
  	gettimeofday(&tv, 0);
  	time->seconds = tv.tv_sec;
  	time->nanoseconds = tv.tv_usec * 1000;
@@ -177,7 +159,12 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
 +	struct timespec tp;
 +
 +	if(! area) {
-+		// register interrupt handler and reserve memory
++		/* set affinity to the CPU No. 1 */
++		if(ThreadCtl(_NTO_TCTL_RUNMASK, (1 << 0)) == -1) {
++			PERROR("ThreadCtrl _NTO_TCTL_RUNMASK");
++			return;
++		}
++		/* reserve memory for interrupt handler */
 +		area = (no_page_area*)malloc(sizeof(no_page_area));
 +		area->int_count = 0;
 +		area->tsc_step = 0;
@@ -185,8 +172,9 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
 +		area->last_tsc = ClockCycles();
 +		clock_gettime(CLOCK_REALTIME, &tp);
 +		area->last_clock = timespec2nsec(&tp);
++		/* request I/O privileges (e.g. let us attach IRQ handlers) */
 +		if(ThreadCtl(_NTO_TCTL_IO, 0) == -1) {
-+			PERROR("ThreadCtrl");
++			PERROR("ThreadCtrl _NTO_TCTL_IO");
 +			return;
 +		}
 +		ret = InterruptAttach(
@@ -222,7 +210,7 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
  #else
  	struct timespec tp;
  	if (clock_gettime(CLOCK_REALTIME, &tp) < 0) {
-@@ -606,8 +697,16 @@
+@@ -606,8 +703,16 @@
  }
  
  
@@ -240,7 +228,7 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
  
  /*
   * TODO: this function should have been coded in a way to manipulate both the frequency and the tick,
-@@ -615,7 +714,7 @@
+@@ -615,7 +720,7 @@
   * This would result in situations we would force the kernel clock to run the clock twice as slow,
   * in order to avoid stepping time backwards
   */
@@ -249,9 +237,27 @@ diff -urN old/src/dep/sys.c new/src/dep/sys.c
  Boolean
  adjFreq(Integer32 adj)
  {
+diff -urN old/src/Makefile new/src/Makefile
+--- old/src/Makefile	2012-06-20 22:02:52.000000000 +0200
++++ new/src/Makefile	2013-03-06 10:54:39.000000000 +0100
+@@ -43,7 +43,13 @@
+ 
+ CFLAGS += -DPTP_EXPERIMENTAL
+ 
+-LDFLAGS = -lm -lrt
++ARCH=$(shell uname)
++ifeq ($(ARCH),QNX)
++	LDFLAGS = -lm -lsocket
++else
++	LDFLAGS = -lm -lrt
++endif
++
+ STATICLIBFLAGS = rcs
+ SHAREDLIBFLAGS = -shared -Wl,-soname
+ 
 diff -urN old/src/protocol.c new/src/protocol.c
---- old/src/protocol.c	2013-01-06 08:11:49.000000000 +0000
-+++ new/src/protocol.c	2013-03-06 09:55:47.000000000 +0000
+--- old/src/protocol.c	2012-06-20 22:02:52.000000000 +0200
++++ new/src/protocol.c	2013-03-06 10:55:47.000000000 +0100
 @@ -291,7 +291,7 @@
  
  		ptpClock->portState = PTP_SLAVE;
@@ -281,8 +287,8 @@ diff -urN old/src/protocol.c new/src/protocol.c
  			}
  			DBG2("___ Announce: received Announce from current Master, so reset the Announce timer\n");
 diff -urN old/src/ptpd.h new/src/ptpd.h
---- old/src/ptpd.h	2013-01-06 08:11:49.000000000 +0000
-+++ new/src/ptpd.h	2013-03-06 09:55:21.000000000 +0000
+--- old/src/ptpd.h	2012-06-20 22:02:52.000000000 +0200
++++ new/src/ptpd.h	2013-03-06 10:55:21.000000000 +0100
 @@ -32,9 +32,12 @@
  #include <netdb.h>
  #include <sys/time.h>
