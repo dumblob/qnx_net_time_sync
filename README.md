@@ -5,36 +5,36 @@ QNX network time synchronization and evaluation of available methods using their
 
 create a new directory
 ~~~~~~
-  mkdir ptp_qnx
-  cd ptp_qnx
+mkdir ptp_qnx
+cd ptp_qnx
 ~~~~~~
-clone a github project (almost 30MB)
+clone a github project (it's huge!)
 ~~~~~~
-  git clone --depth 1 https://github.com/dumblob/qnx_net_time_sync.git
+git clone --depth 1 https://github.com/dumblob/qnx_net_time_sync.git
 ~~~~~~
 download `PTPd` version 2.2.2
 ~~~~~~
-  http://sourceforge.net/projects/ptpd/files/ptpd/2.2.2/ptpd-2.2.2.tar.gz
+http://sourceforge.net/projects/ptpd/files/ptpd/2.2.2/ptpd-2.2.2.tar.gz
 ~~~~~~
 unpack the recently downloaded archive with `PTPd`
 ~~~~~~
-  tar -xzf ptpd-2.2.2.tar.gz
-  cd ptpd-2.2.2
+tar -xzf ptpd-2.2.2.tar.gz
+cd ptpd-2.2.2
 ~~~~~~
 apply the patch
 ~~~~~~
-  patch -p 1 < ../qnx_net_time_sync/results/ptp/patch.ptpd-2.2.2
+patch -p 1 < ../qnx_net_time_sync/results/ptp/patch.ptpd-2.2.2
 ~~~~~~
 compile `PTPd`
 ~~~~~~
-  cd src/
-  make
+cd src/
+make
 ~~~~~~
-run `PTPd` as `master` on interface `eth0` with maximum verbosity
+run `PTPd` as `master` on interface `eth0` with maximum verbosity on stdout
 ~~~~~~
-  ./ptpd2 -G -b eth0 -C -DVfS
+nice -n -25 ./ptpd2 -G -b eth0 -C -DVfS
 ~~~~~~
 or as `slave`
 ~~~~~~
-  ./ptpd2 -g -b eth0 -C -DVfS
+nice -n -25 ./ptpd2 -g -b eth0 -C -DVfS
 ~~~~~~
