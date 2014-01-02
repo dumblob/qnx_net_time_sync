@@ -1,3 +1,5 @@
 results/edge_generator/**/*.o
 results/edge_acceptor/build/
+results/doc/fig/**/*.pdf.png
 results/measurements/**/*.ps.svg
+results/measurements/**/*.ps.png
